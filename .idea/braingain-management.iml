@@ -5,7 +5,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="entityManagerFactory" value="4e2a2657-314b-45e0-a887-39256d392931" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -20,8 +22,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/libraries" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -63,6 +65,7 @@
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.27" level="project" />
     <orderEntry type="library" name="Maven: com.zaxxer:HikariCP:3.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.3.6" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-security:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:5.4.6" level="project" />
@@ -104,5 +107,8 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.7.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.security:spring-security-test:5.4.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.4.6" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.4" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.4" level="project" />
   </component>
 </module>
