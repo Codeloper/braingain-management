@@ -6,6 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
+          <factory-entry name="braingain-management" value="e862b9a5-bf73-4409-8ef9-c5162c274982" />
           <factory-entry name="entityManagerFactory" value="4e2a2657-314b-45e0-a887-39256d392931" />
         </datasource-mapping>
         <naming-strategy-map />
