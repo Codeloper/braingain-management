@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -31,5 +32,16 @@ public class Lesson {
 
     @ManyToOne
     private Subject subject;
+
+    @ManyToMany(mappedBy = "lessons")
+    private Collection<Invoice> invoices;
+
+    public boolean isInvoicedToCustomer() {
+        return invoices.stream().anyMatch(i -> i.getRecipient().equals(customer));
+    }
+
+    public boolean isInvoicedByTutor() {
+        return invoices.stream().anyMatch(i -> i.getRecipient().equals(tutor));
+    }
 
 }

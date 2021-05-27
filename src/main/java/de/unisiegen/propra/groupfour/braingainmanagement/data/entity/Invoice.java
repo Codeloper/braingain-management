@@ -20,7 +20,7 @@ public class Invoice {
     @ManyToOne
     private Person recipient;
 
-    @OneToMany
+    @ManyToMany
     private Collection<Lesson> lessons;
 
 }
