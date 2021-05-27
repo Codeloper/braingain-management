@@ -18,6 +18,12 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository repository;
 
+    /**
+     * Creates a new invoice. Generates a unique id by date in format "YYYYMMDD*", e.g. "202105281"
+     * @param recipient recipient of invoice
+     * @param lessons Collection of lessons
+     * @return new invoice
+     */
     public Invoice createInvoice(final Person recipient, final Collection<Lesson> lessons) {
         final Invoice invoice = new Invoice();
         invoice.setDate(LocalDate.now());
@@ -35,6 +41,11 @@ public class InvoiceService {
         return invoice;
     }
 
+    /**
+     * Generates a unique invoice id in format "YYYYMMDD*", e.g. "202105281"
+     * @param date date to create invoice id from
+     * @return unique invoice id
+     */
     private String generateInvoiceId(final LocalDate date) {
         final String dateString = date.format(DateTimeFormatter.BASIC_ISO_DATE);
         return dateString + Integer.parseInt(repository.findFirstByIdStartsWithOrderByIdDesc(dateString).getId().replace(dateString, "")) + 1;

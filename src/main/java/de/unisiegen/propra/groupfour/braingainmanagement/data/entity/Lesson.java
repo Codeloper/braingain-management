@@ -36,10 +36,18 @@ public class Lesson {
     @ManyToMany(mappedBy = "lessons")
     private Collection<Invoice> invoices;
 
+    /**
+     * Checks if a customer invoice already contains this lesson
+     * @return Whether there is a customer invoice containing this lesson
+     */
     public boolean isInvoicedToCustomer() {
         return invoices.stream().anyMatch(i -> i.getRecipient().equals(customer));
     }
 
+    /**
+     * Checks if a tutor invoice already contains this lesson
+     * @return Whether there is a tutor invoice containing this lesson
+     */
     public boolean isInvoicedByTutor() {
         return invoices.stream().anyMatch(i -> i.getRecipient().equals(tutor));
     }
