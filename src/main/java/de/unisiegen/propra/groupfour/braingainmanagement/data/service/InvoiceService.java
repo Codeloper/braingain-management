@@ -2,13 +2,14 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.service;
 
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.*;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.InvoiceRepository;
-import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.LessonsAlreadyInvoicedException;
+import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.LessonAlreadyInvoicedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,10 +20,11 @@ public class InvoiceService {
     private InvoiceRepository repository;
 
     /**
-     * Creates a new invoice. Generates a unique id by date in format "YYYYMMDD*", e.g. "202105281"
+     * Creates a new invoice. Generates a unique id by date in format "YYYYMMDD*", e.g. "202105281".
      * @param recipient recipient of invoice
      * @param lessons Collection of lessons
-     * @return new invoice
+     * @throws LessonAlreadyInvoicedException Thrown if any of the given lessons is already invoiced
+     * @return New invoice
      */
     public Invoice createInvoice(final Person recipient, final Collection<Lesson> lessons) {
         final Invoice invoice = new Invoice();
@@ -35,7 +37,7 @@ public class InvoiceService {
             throw new IllegalStateException("Person has to be Customer or Tutor");
 
         if(stream.count() > 0)
-            throw new LessonsAlreadyInvoicedException(stream.collect(Collectors.toSet()));
+            throw new LessonAlreadyInvoicedException(stream.collect(Collectors.toSet()));
 
         repository.save(invoice);
         return invoice;
@@ -48,7 +50,8 @@ public class InvoiceService {
      */
     private String generateInvoiceId(final LocalDate date) {
         final String dateString = date.format(DateTimeFormatter.BASIC_ISO_DATE);
-        return dateString + Integer.parseInt(repository.findFirstByIdStartsWithOrderByIdDesc(dateString).getId().replace(dateString, "")) + 1;
+        final Optional<Invoice> lastInvoice = repository.findFirstByIdStartsWithOrderByIdDesc(dateString);
+        return dateString + lastInvoice.map(invoice -> Integer.parseInt(invoice.getId().replace(dateString, "")) + 1).orElse(1);
     }
 
 }

@@ -5,13 +5,16 @@ import lombok.Getter;
 
 import java.util.Collection;
 
-public class LessonsAlreadyInvoicedException extends RuntimeException {
+/**
+ * Appears if attempted to create an invoice with an alrady invoiced lesson
+ */
+public class LessonAlreadyInvoicedException extends RuntimeException {
 
     @Getter
     private final Collection<Lesson> lessons;
 
-    public LessonsAlreadyInvoicedException(Collection<Lesson> lessons) {
-        super("Lessons were already invoiced: " + lessons);
+    public LessonAlreadyInvoicedException(Collection<Lesson> lessons) {
+        super("Lesson(s) were already invoiced: " + lessons);
         this.lessons = lessons;
     }
 

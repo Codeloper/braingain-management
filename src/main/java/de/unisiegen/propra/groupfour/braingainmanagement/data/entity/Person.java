@@ -1,6 +1,7 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import java.util.UUID;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
-public class Person {
+@NoArgsConstructor
+public abstract class Person {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -26,11 +28,21 @@ public class Person {
     @Column(nullable = false)
     private String street, city;
 
-    @Column(nullable = false)
-    private Integer zipcode;
+    @Column(nullable = false, columnDefinition = "CHAR(5)")
+    private String zipcode;
 
     @OneToOne(mappedBy = "person")
     @PrimaryKeyJoinColumn
     private User user;
+
+    public Person(String prename, String surname, String phone, String email, String street, String city, String zipcode) {
+        this.prename = prename;
+        this.surname = surname;
+        this.phone = phone;
+        this.email = email;
+        this.street = street;
+        this.city = city;
+        this.zipcode = zipcode;
+    }
 
 }

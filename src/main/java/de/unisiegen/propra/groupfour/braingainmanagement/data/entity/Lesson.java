@@ -1,6 +1,7 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Lesson {
 
     @Id
@@ -33,8 +35,16 @@ public class Lesson {
     @ManyToOne
     private Subject subject;
 
-    @ManyToMany(mappedBy = "lessons")
+    @ManyToMany(mappedBy = "lessons", fetch = FetchType.LAZY)
     private Collection<Invoice> invoices;
+
+    public Lesson(LocalDate date, Integer count, Tutor tutor, Customer customer, Subject subject) {
+        this.date = date;
+        this.count = count;
+        this.tutor = tutor;
+        this.customer = customer;
+        this.subject = subject;
+    }
 
     /**
      * Checks if a customer invoice already contains this lesson
