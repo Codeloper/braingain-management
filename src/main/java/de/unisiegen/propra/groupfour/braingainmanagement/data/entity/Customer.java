@@ -15,6 +15,6 @@ public class Customer extends Person {
     private String invoiceStreet, invoiceCity;
 
     @Column(nullable = false)
-    private Integer invoiceZipcode;
+    private String invoiceZipcode;
 
 }
