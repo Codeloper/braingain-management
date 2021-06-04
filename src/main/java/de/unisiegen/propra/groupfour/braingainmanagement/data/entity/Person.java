@@ -16,7 +16,7 @@ public abstract class Person {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(nullable = false, updatable = false, columnDefinition = "CHAR(36)")
+    @Column(nullable = false, updatable = false/*, columnDefinition = "CHAR(36)"*/)
     private UUID id;
 
     @Column(nullable = false)
