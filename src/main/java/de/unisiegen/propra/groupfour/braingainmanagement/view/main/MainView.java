@@ -16,6 +16,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.SchülerView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 
 import java.util.Optional;
@@ -75,7 +76,7 @@ public class MainView extends AppLayout {
         /*return new Tab[]{createTab("Schüler", SchülerView.class), createTab("Tutoren", TutorenView.class),
                 createTab("Fächer", FächerView.class), createTab("Stunden", StundenView.class),
                 createTab("Rechnungen", RechnungenView.class)};*/
-        return new Tab[]{createTab("Tutoren", TutorView.class)};
+        return new Tab[]{createTab("Schüler", SchülerView.class),createTab("Tutoren", TutorView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

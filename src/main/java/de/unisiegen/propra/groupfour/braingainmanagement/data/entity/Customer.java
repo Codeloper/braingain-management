@@ -19,7 +19,7 @@ public class Customer extends Person {
     @Column(nullable = false)
     private String invoiceStreet, invoiceCity;
 
-    @Column(nullable = false, columnDefinition = "CHAR(5)")
+    @Column(nullable = false/*, columnDefinition = "CHAR(5)"*/)
     private String invoiceZipcode;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
