@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Rechnung</title>
+
+  <style>
+    @page {
+      size: 21cm 29.7cm;
+      margin: 10mm 10mm 10mm 10mm;
+    }
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 50px;
+      margin-bottom: 50px;
+    }
+
+    td, th{
+      padding: 3px;
+      border: 1px solid black;
+      text-align: center;
+    }
+
+    thead th{
+      background-color: grey;
+    }
+
+    div{
+      font-family: Arial;
+      font-size: 12pt;
+
+    }
+
+    #paycheck{
+      font-size: 20pt;
+
+    }
+
+    .paycheckHead{
+      float: left;
+    }
+
+    .TopLeft{
+      text-align: left;
+      width: 33%;
+    }
+
+    .row:after{
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    #paycheckSum{
+      text-align: right;
+
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="paycheck">
+  <p>Honorarbescheinigung</p>
+</div>
+
+<div class="row">
+  <div class="paycheckHead TopLeft">
+    Für den Monat:
+  <br>
+    Datum:
+  </div>
+</div>
+
+<hr>
+
+<table>
+  <thead>
+  <tr>
+    <th width=5%>Pos</th>
+    <th style= "text-align: left;" width=21% >Leistung</th>
+    <th width=12%>Datum</th>
+    <th width=25%>Schüler</th>
+    <th width=10%>Anzahl h</th>
+    <th width=15%>Honorar pro h</th>
+    <th style="text-align: right;" width=12%>Vergütung</th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+  </tbody>
+</table>
+
+<hr>
+
+<div id="paycheckSum">
+  <br>
+  Gesamtbetrag: <span th:text="${invoice.total()}"></span> EUR
+</div>
+
+</body>
+</html>
