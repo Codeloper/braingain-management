@@ -23,4 +23,12 @@ public class Invoice {
     @ManyToMany
     private Collection<Lesson> lessons;
 
+    /**
+     * Calculates total sum of invoice.
+     * @return sum of all lesson totals
+     */
+    public double total() {
+        return lessons.stream().mapToDouble(Lesson::total).sum();
+    }
+
 }
