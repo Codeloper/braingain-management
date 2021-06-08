@@ -45,4 +45,8 @@ public abstract class Person {
         this.zipcode = zipcode;
     }
 
+    public String getFullName() {
+        return prename + " " + surname;
+    }
+
 }

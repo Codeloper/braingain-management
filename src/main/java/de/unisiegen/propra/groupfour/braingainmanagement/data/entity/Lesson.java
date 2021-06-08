@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Lesson {
+public class Lesson implements Comparable<Lesson> {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -47,6 +47,14 @@ public class Lesson {
     }
 
     /**
+     * Calculates total sum of lesson.
+     * @return total sum of lesson, count * customerPrice
+     */
+    public double total() {
+        return count * subject.getCustomerPrice();
+    }
+
+    /**
      * Checks if a customer invoice already contains this lesson
      * @return Whether there is a customer invoice containing this lesson
      */
@@ -62,4 +70,8 @@ public class Lesson {
         return invoices.stream().anyMatch(i -> i.getRecipient().equals(tutor));
     }
 
+    @Override
+    public int compareTo(Lesson o) {
+        return date.compareTo(o.date);
+    }
 }
