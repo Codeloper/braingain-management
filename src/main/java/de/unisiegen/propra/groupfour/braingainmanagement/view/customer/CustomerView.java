@@ -14,7 +14,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -25,7 +24,6 @@ import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerSe
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.artur.helpers.CrudServiceDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 
@@ -35,7 +33,7 @@ import com.vaadin.flow.component.textfield.TextField;
 @Route(value = "customer/:PersonID?/:action?(edit)", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Schüler")
-public class SchülerView extends Div implements BeforeEnterObserver {
+public class CustomerView extends Div implements BeforeEnterObserver {
 
     private final String CUSTOMER_ID = "personID";
     private final String CUSTOMER_EDIT_ROUTE_TEMPLATE = "customer/%d/edit";
@@ -65,7 +63,7 @@ public class SchülerView extends Div implements BeforeEnterObserver {
 
     private CustomerService customerService;
 
-    public SchülerView(@Autowired CustomerService customerService) {
+    public CustomerView(@Autowired CustomerService customerService) {
         addClassNames("schüler-view", "flex", "flex-col", "h-full");
         this.customerService = customerService;
         // Create UI
@@ -102,7 +100,7 @@ public class SchülerView extends Div implements BeforeEnterObserver {
                 UI.getCurrent().navigate(String.format(CUSTOMER_EDIT_ROUTE_TEMPLATE, event.getValue().getId()));
             } else {
                 clearForm();
-                UI.getCurrent().navigate(SchülerView.class);
+                UI.getCurrent().navigate(CustomerView.class);
             }
         });
 
@@ -129,7 +127,7 @@ public class SchülerView extends Div implements BeforeEnterObserver {
                 clearForm();
                 refreshGrid();
                 Notification.show("Customer details stored.");
-                UI.getCurrent().navigate(SchülerView.class);
+                UI.getCurrent().navigate(CustomerView.class);
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the customer details.");
             }
