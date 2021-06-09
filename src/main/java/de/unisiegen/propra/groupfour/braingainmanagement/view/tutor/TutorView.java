@@ -50,8 +50,9 @@ public class TutorView extends Div implements BeforeEnterObserver {
     //private TextField occupation;
     //private Checkbox important;
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private Button cancel = new Button("Abbrechen");
+    private Button save = new Button("Speichern");
+    private Button delete = new Button("Löschen");
 
     private Binder<Tutor> binder;
 
@@ -116,10 +117,10 @@ public class TutorView extends Div implements BeforeEnterObserver {
 
         save.addClickListener(e -> {
             try {
-                /*if (this.tutor == null) {
-                    System.out.println("ALAAAAAAARM");
+                if (this.tutor == null) {
+                    //System.out.println("ALAAAAAAARM");
                     this.tutor = new Tutor();
-                }*/
+                }
                 binder.writeBean(this.tutor);
 
                 tutorService.update(this.tutor);
@@ -131,7 +132,27 @@ public class TutorView extends Div implements BeforeEnterObserver {
                 Notification.show("An exception happened while trying to store the Tutoren details.");
             }
         });
+        delete.addClickListener(e -> {
+            try {
+                if (this.tutor == null) {
+                    this.tutor = new Tutor();
+                }
+                binder.writeBean(this.tutor);
+                tutorService.delete(this.tutor.getId());
+                clearForm();
+                refreshGrid();
+                Notification.show("Customer details deleted.");
+                //this.customer=null;
+                UI.getCurrent().navigate(TutorView.class);
 
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to delete the customer details.");
+            }
+
+
+
+
+        });
     }
 
     @Override
@@ -197,7 +218,8 @@ public class TutorView extends Div implements BeforeEnterObserver {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        buttonLayout.add(save, cancel,delete);
         editorLayoutDiv.add(buttonLayout);
     }
 

@@ -12,6 +12,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -22,25 +24,27 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.CustomerView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.artur.helpers.CrudServiceDataProvider;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Route(value = "subject/:SubjectID?/:action?(edit)", layout = MainView.class)
+@Route(value = "subject/:subjectID?/:action?(edit)", layout = MainView.class)
 @PageTitle("Fächer")
 public class SubjectView extends Div implements BeforeEnterObserver {
     private final String SUBJECT_ID = "subjectID";
-    private final String SUBJECT_EDIT_ROUTE_TEMPLATE = "subject/%d/edit";
+    private final String SUBJECT_EDIT_ROUTE_TEMPLATE = "subject/%s/edit";
 
     private Grid<Subject> grid = new Grid<>(Subject.class, false);
-
-    private TextField tutorFee;
-    private TextField customerPrice;
+    private TextField id;
+    private IntegerField tutorFee;
+    private IntegerField customerPrice;
     //private TextField tutorfee;
     //private TextField studentprice;
     //private TextField email;
@@ -50,8 +54,9 @@ public class SubjectView extends Div implements BeforeEnterObserver {
     //private TextField occupation;
     //private Checkbox important;
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private Button cancel = new Button("Abbrechen");
+    private Button save = new Button("Speichern");
+    private Button delete = new Button("Löschen");
 
     private Binder<Subject> binder;
 
@@ -72,6 +77,7 @@ public class SubjectView extends Div implements BeforeEnterObserver {
     add(splitLayout);
 
     // Configure Grid
+        grid.addColumn("id").setHeader("Bezeichnung").setAutoWidth(true);
         grid.addColumn("tutorFee").setHeader("Tutorenhonorar").setAutoWidth(true);
         grid.addColumn("customerPrice").setHeader("Kundenpreis").setAutoWidth(true);
     //grid.addColumn("tutorFee").setHeader("Tutorenhonorar").setAutoWidth(true);
@@ -124,18 +130,40 @@ public class SubjectView extends Div implements BeforeEnterObserver {
             clearForm();
             refreshGrid();
             Notification.show("Fach details stored.");
-            UI.getCurrent().navigate(CustomerView.class);
+            UI.getCurrent().navigate(SubjectView.class);
         } catch (ValidationException validationException) {
             Notification.show("An exception happened while trying to store the Fach details.");
         }
     });
+
+        delete.addClickListener(e -> {
+            try {
+                if (this.subject == null) {
+                    this.subject = new Subject();
+                }
+                binder.writeBean(this.subject);
+                subjectService.delete(this.subject.getId());
+                clearForm();
+                refreshGrid();
+                Notification.show("Subject details deleted.");
+                //this.customer=null;
+                UI.getCurrent().navigate(TutorView.class);
+
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to delete the customer details.");
+            }
+
+
+
+
+        });
 }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<String> subjectId = event.getRouteParameters().get(SUBJECT_ID);
         if (subjectId.isPresent()) {
-            Optional<Subject> subjectFromBackend = subjectService.get(UUID.fromString(subjectId.get()));
+            Optional<Subject> subjectFromBackend = subjectService.get(subjectId.get());
             if (subjectFromBackend.isPresent()) {
                 populateForm(subjectFromBackend.get());
             } else {
@@ -161,8 +189,14 @@ public class SubjectView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        tutorFee = new TextField("Tutorenhonorar");
-        customerPrice = new TextField("Kundenpreis");
+        id= new TextField("Bezeichnung");
+        tutorFee = new IntegerField("Tutorenhonorar");
+        tutorFee.setHasControls(true);
+        tutorFee.setMin(0);
+
+        customerPrice = new IntegerField("Kundenpreis");
+        customerPrice.setHasControls(true);
+        customerPrice.setMin(0);
         //studentprice = new TextField("Schüelerpreis");
         //tutorfee = new TextField("Tutorenhonorar");
         //email = new TextField("Email");
@@ -171,7 +205,7 @@ public class SubjectView extends Div implements BeforeEnterObserver {
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{tutorFee,customerPrice}; //studentprice, tutorfee};
+        Component[] fields = new Component[]{id,tutorFee,customerPrice};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -189,7 +223,8 @@ public class SubjectView extends Div implements BeforeEnterObserver {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        buttonLayout.add(save, cancel,delete);
         editorLayoutDiv.add(buttonLayout);
     }
 

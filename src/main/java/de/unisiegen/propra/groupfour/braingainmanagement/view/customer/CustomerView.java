@@ -30,7 +30,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
-@Route(value = "customer/:PersonID?/:action?(edit)", layout = MainView.class)
+@Route(value = "customer/:personID?/:action?(edit)", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Schüler")
 public class CustomerView extends Div implements BeforeEnterObserver {
@@ -54,8 +54,9 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     //private TextField occupation;
     //private Checkbox important;
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private Button cancel = new Button("Abbrechen");
+    private Button save = new Button("Speichern");
+    private Button delete = new Button("Löschen");
 
     private Binder<Customer> binder;
 
@@ -78,6 +79,14 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         // Configure Grid
         grid.addColumn("prename").setHeader("Vorname").setAutoWidth(true);
         grid.addColumn("surname").setHeader("Nachname").setAutoWidth(true);
+        grid.addColumn("phone").setHeader("Telefon").setAutoWidth(true);
+        grid.addColumn("email").setHeader("Email").setAutoWidth(true);
+        grid.addColumn("street").setHeader("Straße").setAutoWidth(true);
+        grid.addColumn("city").setHeader("Stadt").setAutoWidth(true);
+        grid.addColumn("zipcode").setHeader("PLZ").setAutoWidth(true);
+        grid.addColumn("invoiceStreet").setHeader("Rechnungsadresse").setAutoWidth(true);
+        grid.addColumn("invoiceCity").setHeader("Rechnungsstraße").setAutoWidth(true);
+        grid.addColumn("invoiceZipcode").setHeader("Rechnungs-PLZ").setAutoWidth(true);
         //grid.addColumn("address").setHeader("Adresse").setAutoWidth(true);
         //grid.addColumn("email").setHeader("Email").setAutoWidth(true);
         //grid.addColumn("contact").setHeader("Kontakt").setAutoWidth(true);
@@ -131,6 +140,28 @@ public class CustomerView extends Div implements BeforeEnterObserver {
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the customer details.");
             }
+        });
+
+        delete.addClickListener(e -> {
+            try {
+                if (this.customer == null) {
+                    this.customer = new Customer();
+                }
+                binder.writeBean(this.customer);
+                customerService.delete(this.customer.getId());
+                clearForm();
+                refreshGrid();
+                Notification.show("Customer details deleted.");
+                //this.customer=null;
+                UI.getCurrent().navigate(CustomerView.class);
+
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to delete the customer details.");
+            }
+
+
+
+
         });
 
     }
@@ -197,7 +228,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        buttonLayout.add(save, cancel,delete);
         editorLayoutDiv.add(buttonLayout);
     }
 

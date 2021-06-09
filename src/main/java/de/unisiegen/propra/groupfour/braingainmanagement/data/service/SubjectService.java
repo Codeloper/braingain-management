@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class SubjectService extends CrudService<Subject, UUID> {
+public class SubjectService extends CrudService<Subject, String> {
 
     @Getter(AccessLevel.PROTECTED)
     private final SubjectRepository repository;
@@ -30,8 +30,10 @@ public class SubjectService extends CrudService<Subject, UUID> {
         return subjects;
     }
 
-    @Override
+   /* @Override
     public Optional<Subject> get(final UUID uuid) {
         return repository.findAll().stream().filter(t -> t.getId().equals(uuid)).findFirst();
     }
+
+    */
 }
