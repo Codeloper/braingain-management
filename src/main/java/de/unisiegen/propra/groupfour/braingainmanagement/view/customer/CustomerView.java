@@ -36,7 +36,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class CustomerView extends Div implements BeforeEnterObserver {
 
     private final String CUSTOMER_ID = "personID";
-    private final String CUSTOMER_EDIT_ROUTE_TEMPLATE = "customer/%d/edit";
+    private final String CUSTOMER_EDIT_ROUTE_TEMPLATE = "customer/%s/edit";
 
     private Grid<Customer> grid = new Grid<>(Customer.class, false);
 

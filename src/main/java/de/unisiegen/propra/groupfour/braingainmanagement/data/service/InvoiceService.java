@@ -26,13 +26,13 @@ public class InvoiceService {
      * @throws LessonAlreadyInvoicedException Thrown if any of the given lessons is already invoiced
      * @return New invoice
      */
-    public Invoice createInvoice(final Person recipient, final Collection<Lesson> lessons) {
+    public Invoice createInvoice(final Customer recipient, final Collection<Lesson> lessons) {
         final Invoice invoice = new Invoice();
         invoice.setDate(LocalDate.now());
         invoice.setId(generateInvoiceId(invoice.getDate()));
         invoice.setRecipient(recipient);
 
-        final Stream<Lesson> stream = recipient instanceof Customer ? lessons.stream().filter(Lesson::isInvoicedToCustomer) : recipient instanceof Tutor ? lessons.stream().filter(Lesson::isInvoicedByTutor) : null;
+        final Stream<Lesson> stream = lessons.stream().filter(Lesson::isInvoicedToCustomer);
         if(stream == null)
             throw new IllegalStateException("Person has to be Customer or Tutor");
 

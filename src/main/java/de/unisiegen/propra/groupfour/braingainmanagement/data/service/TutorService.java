@@ -23,14 +23,7 @@ public class TutorService extends CrudService<Tutor, UUID> {
     }
 
     public List<Tutor> fetchAll() {
-        final List<Tutor> tutors = repository.findAll();
-        tutors.forEach(t -> System.out.printf("%s, %s %s\n", t.getId(), t.getPrename(), t.getSurname()));
-        return tutors;
-    }
-
-    @Override
-    public Optional<Tutor> get(final UUID uuid) {
-        return repository.findAll().stream().filter(t -> t.getId().equals(uuid)).findFirst();
+        return repository.findAll();
     }
 
 }

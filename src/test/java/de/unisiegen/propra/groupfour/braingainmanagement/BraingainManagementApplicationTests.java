@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SpringBootTest
@@ -30,7 +30,8 @@ class BraingainManagementApplicationTests {
 	@Test
 	void tutorService() {
 		//tutorService.update(new Tutor("Tom", "Rasch", "1", "aa", "aa", "a", "a", "a", "a"));
-		Assertions.assertEquals("ba14c1ff-d0a7-46b3-ba8b-a50a9a813345, Tom Rasch", tutorService.fetchAll().stream().map(t -> String.format("%s, %s %s", t.getId(), t.getPrename(), t.getSurname())).collect(Collectors.joining()));
+		Assertions.assertEquals("a199518d-3267-4003-a7f5-4fa636280341, Tom Rasch\n", tutorService.fetchAll().stream().map(t -> String.format("%s, %s %s\n", t.getId(), t.getPrename(), t.getSurname())).collect(Collectors.joining()));
+		//Assertions.assertTrue(tutorService.getRepository().findById(UUID.fromString("a199518d-3267-4003-a7f5-4fa636280341")).isPresent());
 	}
 
 	@Test
