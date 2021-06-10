@@ -17,6 +17,7 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.CustomerView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.invoice.InvoiceView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.lessons.LessonView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
@@ -78,7 +79,7 @@ public class MainView extends AppLayout {
         /*return new Tab[]{createTab("Schüler", SchülerView.class), createTab("Tutoren", TutorenView.class),
                 createTab("Fächer", FächerView.class), createTab("Stunden", StundenView.class),
                 createTab("Rechnungen", RechnungenView.class)};*/
-        return new Tab[]{createTab("Schüler", CustomerView.class),createTab("Tutoren", TutorView.class),createTab("Fächer", SubjectView.class),createTab("Stunden", LessonView.class)};
+        return new Tab[]{createTab("Schüler", CustomerView.class),createTab("Tutoren", TutorView.class),createTab("Fächer", SubjectView.class),createTab("Stunden", LessonView.class),createTab("Abrechnungen", InvoiceView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

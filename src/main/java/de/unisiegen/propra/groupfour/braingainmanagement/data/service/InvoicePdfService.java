@@ -27,6 +27,7 @@ public class InvoicePdfService {
     public void createPdf(Invoice invoice) throws IOException {
         try (final OutputStream os = new FileOutputStream(String.format(INVOICE_FILE_PATH, invoice.getId()))) {
             final Context context = new Context();
+
             context.setVariable("invoice", invoice);
 
             final String htmlBody = springTemplateEngine.process(invoice.getRecipient() instanceof Customer ? "invoice.html" : "paycheck.html", context);

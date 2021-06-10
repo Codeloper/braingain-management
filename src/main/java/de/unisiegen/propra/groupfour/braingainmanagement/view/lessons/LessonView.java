@@ -150,7 +150,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
         save.addClickListener(e -> {
             try {
                 if (this.lesson == null) {
-                    //System.out.println("ALAAAAAAARM");
+
                     this.lesson = new Lesson();
                 }
                 binder.writeBean(this.lesson);

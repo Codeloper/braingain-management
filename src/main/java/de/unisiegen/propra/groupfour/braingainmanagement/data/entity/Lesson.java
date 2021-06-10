@@ -39,7 +39,7 @@ public class Lesson implements Comparable<Lesson> {
     @ManyToOne(optional = false)
     private Subject subject;
 
-    @ManyToMany(mappedBy = "lessons", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "lessons", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<Invoice> invoices;

@@ -78,7 +78,7 @@ class BraingainManagementApplicationTests {
 		final Invoice invoice = new Invoice();
 		final Customer customer = new Customer("Peter", "Lustig", "51561650", "asd@agm.de", "Musterstraße 2", "Olpe", "57462");
 		final Tutor tutor = new Tutor("Tom", "Rasch", "01712693653", "me@tom.cologne", "Westfälische Straße 62", "Olpe", "57462", "WELADED1OPE", "DE48462500490002574473");
-		final Subject subject = new Subject("Mathe", 25, 15);
+		final Subject subject = new Subject("Mathe", 15, 25);
 		invoice.setDate(LocalDate.now());
 		invoice.setId("2020060801");
 		invoice.setRecipient(customer);
