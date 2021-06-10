@@ -1,8 +1,10 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.view.customer;
 
+import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
@@ -11,16 +13,22 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.data.binder.Binder;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +58,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private TextField invoiceStreet;
     private TextField invoiceCity;
     private TextField invoiceZipcode;
+    //private NativeSelect subjects;
+    //private MultiSelectListBox<CustomerSubject> subjects;
     //private DatePicker dateOfBirth;
     //private TextField occupation;
     //private Checkbox important;
@@ -57,16 +67,18 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
     private Button delete = new Button("Löschen");
+    private Button addSubject = new Button("Fach hinzufügen");
 
     private Binder<Customer> binder;
 
     private Customer customer;
 
     private CustomerService customerService;
-
-    public CustomerView(@Autowired CustomerService customerService) {
+    private SubjectService subjectService;
+    public CustomerView(@Autowired CustomerService customerService,@Autowired SubjectService subjectService) {
         addClassNames("schüler-view", "flex", "flex-col", "h-full");
         this.customerService = customerService;
+        this.subjectService= subjectService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -164,6 +176,58 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
         });
 
+        addSubject.addClickListener(e ->{
+            if(grid.getSelectedItems().iterator().hasNext()==false) {
+                Notification.show("Bitte wählen Sie einen Schüler aus");
+                return;
+            }
+            try {
+                if (this.customer == null) {
+                    this.customer = new Customer();
+                }
+                binder.writeBean(this.customer);
+                Customer customerTemp = (Customer) grid.getSelectedItems().toArray()[0];
+                com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+
+                FormLayout formLayout = new FormLayout();
+                Select<Subject> dialogSubject = new Select<Subject>();
+                dialogSubject.setLabel("Fach");
+                dialogSubject.setItems(subjectService.fetchAll());
+                IntegerField dialogInteger = new IntegerField("Kontingent");
+                dialogInteger.hasControls();
+                //dialogInteger.setLabel("");
+                Button dialogAdd = new Button("Hinzufügen");
+                dialogAdd.addClickListener(ev -> {
+
+                    Notification.show("Added "+dialogSubject.getValue().toString()+": "+dialogInteger.getValue().toString()+" to "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                    dialog.close();
+
+                });
+                Button cancelButton = new Button("Cancel", event -> {
+
+                    dialog.close();
+                });
+                //dialog.add(new Text("Close me with the esc-key or an outside click"));
+                formLayout.add(dialogSubject);
+                formLayout.add(dialogInteger);
+                formLayout.add(dialogAdd);
+                formLayout.add(cancelButton);
+                dialog.add(formLayout);
+                dialog.setWidth("500px");
+                dialog.setHeight("300px");
+                dialog.open();
+                clearForm();
+                refreshGrid();
+                //Notification.show("Customer details deleted.");
+                //this.customer=null;
+                UI.getCurrent().navigate(CustomerView.class);
+
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to add the customersubject details.");
+            }
+
+        });
+
     }
 
     @Override
@@ -205,12 +269,16 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         invoiceStreet = new TextField("Rechnungsadresse");
         invoiceCity = new TextField("Rechnungsstadt");
         invoiceZipcode = new TextField("Rechnungs-PLZ");
+        //subjects = new MultiSelectListBox<CustomerSubject>();
+        //subjects.setItems(customer.getSubjects());
+
+
 
         //dateOfBirth = new DatePicker("Date Of Birth");
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode};
+        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode,};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -229,7 +297,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        buttonLayout.add(save, cancel,delete);
+        addSubject.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        buttonLayout.add(save, cancel,delete,addSubject);
         editorLayoutDiv.add(buttonLayout);
     }
 
