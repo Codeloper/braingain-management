@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface InvoiceRepository extends CrudRepository<Invoice, String> {
+public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 
     Optional<Invoice> findFirstByIdStartsWithOrderByIdDesc(String id);
 

@@ -20,13 +20,7 @@ public class CustomerService extends CrudService<Customer, UUID> {
     public CustomerService(@Autowired CustomerRepository repository) { this.repository = repository; }
 
     public List<Customer> fetchAll() {
-        final List<Customer> customers = repository.findAll();
-        customers.forEach(t -> System.out.printf("%s, %s %s\n", t.getId(), t.getPrename(), t.getSurname()));
-        return customers;
+        return repository.findAll();
     }
 
-    @Override
-    public Optional<Customer> get(final UUID uuid) {
-        return repository.findAll().stream().filter(t -> t.getId().equals(uuid)).findFirst();
-    }
 }

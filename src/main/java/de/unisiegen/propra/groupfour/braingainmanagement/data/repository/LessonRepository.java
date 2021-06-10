@@ -15,4 +15,8 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
     //@Query("select count(l) from Lesson l where l.customer = :customer and l.subject = :subject and month(l.date) = :month")
     //int countCustomerSubjectQuota(Customer customer, Subject subject, int month);
 
+    Collection<Lesson> findAllByCustomerEqualsAndDateBetween(Customer customer, LocalDate start, LocalDate end);
+
+    Collection<Lesson> findAllByTutorEqualsAndDateBetween(Tutor tutor, LocalDate start, LocalDate end);
+
 }

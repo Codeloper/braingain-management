@@ -84,8 +84,7 @@ class BraingainManagementApplicationTests {
 		invoice.setRecipient(customer);
 		invoice.setLessons(Arrays.asList(new Lesson(LocalDate.now(), 2, tutor, customer, subject), new Lesson(LocalDate.now(), 1, tutor, customer, subject)));
 		try {
-			invoicePdfService.createCustomerInvoice(invoice);
-			invoicePdfService.createTutorInvoice(invoice);
+			invoicePdfService.createPdf(invoice);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

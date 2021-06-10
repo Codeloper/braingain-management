@@ -26,20 +26,23 @@ public class InvoiceService {
      * @throws LessonAlreadyInvoicedException Thrown if any of the given lessons is already invoiced
      * @return New invoice
      */
-    public Invoice createInvoice(final Customer recipient, final Collection<Lesson> lessons) {
+    public Invoice createInvoice(Person recipient, Collection<Lesson> lessons) {
         final Invoice invoice = new Invoice();
         invoice.setDate(LocalDate.now());
         invoice.setId(generateInvoiceId(invoice.getDate()));
         invoice.setRecipient(recipient);
 
-        final Stream<Lesson> stream = lessons.stream().filter(Lesson::isInvoicedToCustomer);
-        if(stream == null)
-            throw new IllegalStateException("Person has to be Customer or Tutor");
+        final Collection<Lesson> invoicedLessons = recipient instanceof Customer ? lessons.stream().filter(Lesson::isInvoicedToCustomer).collect(Collectors.toSet()) : recipient instanceof Tutor ? lessons.stream().filter(Lesson::isInvoicedByTutor).collect(Collectors.toSet()) : null;
+        if(invoicedLessons == null)
+            throw new IllegalStateException("recipient has to be Customer or Tutor");
 
-        if(stream.count() > 0)
-            throw new LessonAlreadyInvoicedException(stream.collect(Collectors.toSet()));
+        if(invoicedLessons.size() > 0)
+            throw new LessonAlreadyInvoicedException(lessons);
+
+        invoice.setLessons(lessons);
 
         repository.save(invoice);
+
         return invoice;
     }
 
@@ -48,7 +51,7 @@ public class InvoiceService {
      * @param date date to create invoice id from
      * @return unique invoice id
      */
-    private String generateInvoiceId(final LocalDate date) {
+    private String generateInvoiceId(LocalDate date) {
         final String dateString = date.format(DateTimeFormatter.BASIC_ISO_DATE);
         final Optional<Invoice> lastInvoice = repository.findFirstByIdStartsWithOrderByIdDesc(dateString);
         return dateString + lastInvoice.map(invoice -> Integer.parseInt(invoice.getId().replace(dateString, "")) + 1).orElse(1);

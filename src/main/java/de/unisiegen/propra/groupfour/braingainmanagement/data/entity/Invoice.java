@@ -21,6 +21,7 @@ public class Invoice {
     private Person recipient;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Lesson> lessons;
 
     /**
