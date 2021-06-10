@@ -28,13 +28,13 @@ public class Lesson implements Comparable<Lesson> {
     @Column(nullable = false)
     private Integer count;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Tutor tutor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Customer customer;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Subject subject;
 
     @ManyToMany(mappedBy = "lessons", fetch = FetchType.LAZY)

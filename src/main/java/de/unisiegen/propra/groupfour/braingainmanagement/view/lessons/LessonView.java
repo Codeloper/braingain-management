@@ -37,7 +37,11 @@ import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
+
 @Route(value = "lessons/:LessonID?/:action?(edit)", layout = MainView.class)
 //@RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Stunden")
@@ -81,7 +85,9 @@ public class LessonView extends Div implements BeforeEnterObserver {
 
     private final LessonService lessonService;
 
-    public LessonView(@Autowired LessonService lessonService) {
+    public LessonView(@Autowired LessonService lessonService, @Autowired TutorService tutorService) {
+        tutorOBJECT = tutorService.fetchAll().get(0);
+
         addClassNames("lesson-view", "flex", "flex-col", "h-full");
         this.lessonService = lessonService;
         // Create UI
@@ -185,12 +191,12 @@ public class LessonView extends Div implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<String> lessonId = event.getRouteParameters().get(LESSON_ID);
         if (lessonId.isPresent()) {
-            Optional<Lesson> lessonFromBackend = lessonService.get(lesson.getId());
+            Optional<Lesson> lessonFromBackend = lessonService.get(UUID.fromString(lessonId.get()));
             if (lessonFromBackend.isPresent()) {
                 populateForm(lessonFromBackend.get());
             } else {
                 Notification.show(
-                        String.format("The requested Fach was not found, ID = %d", lessonId.get()), 3000,
+                        String.format("The requested lesson was not found, ID = %s", lessonId.get()), 3000,
                         Notification.Position.BOTTOM_START);
                 // when a row is selected but the data is no longer available,
                 // refresh grid

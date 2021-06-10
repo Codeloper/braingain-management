@@ -3,11 +3,10 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -22,8 +21,13 @@ public class Customer extends Person {
     @Column(nullable = false/*, columnDefinition = "CHAR(5)"*/)
     private String invoiceZipcode;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<CustomerSubject> subjects;
+
+    //@ManyToMany(mappedBy = "customers")
+    //@LazyCollection(LazyCollectionOption.TRUE)
+    //private Collection<Tutor> tutors;
 
     public Customer(String prename, String surname, String phone, String email, String street, String city, String zipcode, String invoiceStreet, String invoiceCity, String invoiceZipcode) {
         super(prename, surname, phone, email, street, city, zipcode);
@@ -35,4 +39,10 @@ public class Customer extends Person {
     public Customer(String prename, String surname, String phone, String email, String street, String city, String zipcode) {
         this(prename, surname, phone, email, street, city, zipcode, street, city, zipcode);
     }
+
+    @Override
+    public String toString() {
+        return getFullName();
+    }
+
 }

@@ -17,4 +17,9 @@ public class Subject {
     @Column(nullable = false)
     private Integer tutorFee, customerPrice;
 
+    @Override
+    public String toString() {
+        return id;
+    }
+
 }

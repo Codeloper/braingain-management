@@ -12,7 +12,7 @@ public class CustomerSubject {
     @Column(nullable = false, updatable = false)
     private CustomerSubjectKey id = new CustomerSubjectKey();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("customerId")
     @JoinColumn(name = "customer_id", columnDefinition = "CHAR(36)")
     private Customer customer;
