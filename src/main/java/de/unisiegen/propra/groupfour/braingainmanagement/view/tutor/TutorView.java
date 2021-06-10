@@ -126,7 +126,6 @@ public class TutorView extends Div implements BeforeEnterObserver {
         save.addClickListener(e -> {
             try {
                 if (this.tutor == null) {
-                    //System.out.println("ALAAAAAAARM");
                     this.tutor = new Tutor();
                 }
                 binder.writeBean(this.tutor);
@@ -167,7 +166,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<String> tutorId = event.getRouteParameters().get(TUTOR_ID);
         if (tutorId.isPresent()) {
-            System.out.println("TUTOR ID: " + tutorId.get());
+
             Optional<Tutor> tutorFromBackend = tutorService.get(UUID.fromString(tutorId.get()));
             if (tutorFromBackend.isPresent()) {
                 populateForm(tutorFromBackend.get());

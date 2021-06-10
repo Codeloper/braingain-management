@@ -1,6 +1,9 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -8,6 +11,7 @@ import java.util.Collection;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Invoice {
 
     @Id
@@ -21,6 +25,7 @@ public class Invoice {
     private Person recipient;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Lesson> lessons;
 
     /**
@@ -36,5 +41,6 @@ public class Invoice {
      * @return sum of all lesson totals
      */
     public double tutorInvoiceTotal(){return lessons.stream().mapToDouble(Lesson::tutorTotal).sum();}
+
 
 }

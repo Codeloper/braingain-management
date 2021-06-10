@@ -25,15 +25,6 @@ public class SubjectService extends CrudService<Subject, String> {
     }
 
     public List<Subject> fetchAll() {
-        final List<Subject> subjects = repository.findAll();
-        subjects.forEach(t -> System.out.printf("%s\n", t.getId()));
-        return subjects;
+        return repository.findAll();
     }
-
-   /* @Override
-    public Optional<Subject> get(final UUID uuid) {
-        return repository.findAll().stream().filter(t -> t.getId().equals(uuid)).findFirst();
-    }
-
-    */
 }
