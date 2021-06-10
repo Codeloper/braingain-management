@@ -8,6 +8,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 @Data
@@ -26,15 +27,26 @@ public class Tutor extends Person {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Customer> customers;
 
+    /**
+     * Adds a subject the teacher can teach
+     * @param subject subject to add
+     */
+    public void addSubject(Subject subject) {
+        if(subjects == null)
+            subjects = new HashSet<>();
+
+        subjects.add(subject);
+    }
+
+    @Override
+    public String toString(){
+        return getFullName();
+    }
+
     public Tutor(String prename, String surname, String phone, String email, String street, String city, String zipcode, String bic, String iban) {
         super(prename, surname, phone, email, street, city, zipcode);
         this.bic = bic;
         this.iban = iban;
     }
 
-    @Override
-    public String toString(){
-        return getFullName();
-
-    }
 }

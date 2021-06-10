@@ -8,6 +8,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 @Data
@@ -23,11 +24,29 @@ public class Customer extends Person {
 
     @OneToMany(mappedBy = "customer")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @EqualsAndHashCode.Exclude
     private Collection<CustomerSubject> subjects;
 
     //@ManyToMany(mappedBy = "customers")
     //@LazyCollection(LazyCollectionOption.TRUE)
     //private Collection<Tutor> tutors;
+
+    /**
+     * Adds a subject the customer learns
+     * @param subject subject to add
+     * @param quota quota of subject, null if unlimited
+     */
+    public void addSubject(Subject subject, Integer quota) {
+        if(subjects == null)
+            subjects = new HashSet<>();
+
+        subjects.add(new CustomerSubject(this, subject, quota));
+    }
+
+    @Override
+    public String toString() {
+        return getFullName();
+    }
 
     public Customer(String prename, String surname, String phone, String email, String street, String city, String zipcode, String invoiceStreet, String invoiceCity, String invoiceZipcode) {
         super(prename, surname, phone, email, street, city, zipcode);
@@ -38,11 +57,6 @@ public class Customer extends Person {
 
     public Customer(String prename, String surname, String phone, String email, String street, String city, String zipcode) {
         this(prename, surname, phone, email, street, city, zipcode, street, city, zipcode);
-    }
-
-    @Override
-    public String toString() {
-        return getFullName();
     }
 
 }

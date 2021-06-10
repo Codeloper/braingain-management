@@ -1,6 +1,7 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -38,6 +39,7 @@ public class Lesson implements Comparable<Lesson> {
     private Subject subject;
 
     @ManyToMany(mappedBy = "lessons", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
     private Collection<Invoice> invoices;
 
     public Lesson(LocalDate date, Integer count, Tutor tutor, Customer customer, Subject subject) {
