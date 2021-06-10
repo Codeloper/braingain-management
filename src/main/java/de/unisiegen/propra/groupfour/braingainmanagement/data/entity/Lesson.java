@@ -52,9 +52,15 @@ public class Lesson implements Comparable<Lesson> {
      * Calculates total sum of lesson.
      * @return total sum of lesson, count * customerPrice
      */
-    public double total() {
+    public double customerTotal() {
         return count * subject.getCustomerPrice();
     }
+
+    /**
+     * Calculates total sum of lesson.
+     * @return total sum of lesson, count * tutorFee
+     */
+    public double tutorTotal(){ return count * subject.getTutorFee();}
 
     /**
      * Checks if a customer invoice already contains this lesson

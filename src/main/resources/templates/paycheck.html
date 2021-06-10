@@ -2,7 +2,7 @@
 <html lang="de" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title>Rechnung</title>
+    <title>Honorarabrechnung</title>
 
   <style>
     @page {
@@ -70,10 +70,11 @@
 </div>
 
 <div class="row">
-  <div class="paycheckHead TopLeft">
-    Für den Monat:
+  <div class="paycheckHead TopLeft" th:object="${invoice}">
+
+    Für den Monat: <span th:text="*{#temporals.format(date, 'MM.yyyy')}" ></span>
   <br>
-    Datum:
+    Datum: <span th:text="${invoice.date}"></span>
   </div>
 </div>
 
@@ -93,7 +94,16 @@
   </thead>
 
   <tbody>
+  <tr th:each="lesson, iter: ${invoice.lessons}">
+    <td th:text="${iter.index + 1}"> </td>
+    <td style= "text-align: left;"> <span th:text="${lesson.subject.id}"></span> </td>
+    <td th:text="${lesson.date}"></td>
+    <td th:text="${lesson.customer.getFullName()}"></td>
+    <td th:text="${lesson.count}"></td>
+    <td> <span th:text="${lesson.subject.tutorFee}"></span> EUR</td>
+    <td style= "text-align: right;"> <span th:text="${lesson.tutorTotal()}"></span> EUR</td>
 
+  </tr>
   </tbody>
 </table>
 
@@ -101,7 +111,7 @@
 
 <div id="paycheckSum">
   <br>
-  Gesamtbetrag: <span th:text="${invoice.total()}"></span> EUR
+  Gesamtbetrag: <span th:text="${invoice.tutorInvoiceTotal()}"></span> EUR
 </div>
 
 </body>
