@@ -26,7 +26,7 @@ public class Tutor extends Person {
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Collection<Customer> customers;
+    private Set<Customer> customers;
 
     /**
      * Adds a subject the teacher can teach

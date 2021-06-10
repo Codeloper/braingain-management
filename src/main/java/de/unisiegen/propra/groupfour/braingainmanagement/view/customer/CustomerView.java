@@ -37,6 +37,7 @@ import com.vaadin.flow.router.PageTitle;
 
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
+import org.vaadin.gatanaso.MultiselectComboBox;
 
 @Route(value = "customer/:personID?/:action?(edit)", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
@@ -59,7 +60,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private TextField invoiceCity;
     private TextField invoiceZipcode;
     //private NativeSelect subjects;
-    //private MultiSelectListBox<CustomerSubject> subjects;
+    //private MultiselectComboBox<CustomerSubject> subjects;
     //private DatePicker dateOfBirth;
     //private TextField occupation;
     //private Checkbox important;
@@ -68,6 +69,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private Button save = new Button("Speichern");
     private Button delete = new Button("Löschen");
     private Button addSubject = new Button("Fach hinzufügen");
+    private Button deleteSubject = new Button("Fach Löschen");
 
     private Binder<Customer> binder;
 
@@ -194,13 +196,20 @@ public class CustomerView extends Div implements BeforeEnterObserver {
                 dialogSubject.setLabel("Fach");
                 dialogSubject.setItems(subjectService.fetchAll());
                 IntegerField dialogInteger = new IntegerField("Kontingent");
-                dialogInteger.hasControls();
+                dialogInteger.setHasControls(true);
                 //dialogInteger.setLabel("");
                 Button dialogAdd = new Button("Hinzufügen");
                 dialogAdd.addClickListener(ev -> {
-
-                    Notification.show("Added "+dialogSubject.getValue().toString()+": "+dialogInteger.getValue().toString()+" to "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                    //TODO eingaben überprüfen
+                    //this.customerService.get(customerTemp.getId()).addSubject(dialogSubject.getValue(),dialogInteger.getValue())
+                    customerSubjectRepository.save(new CustomerSubject(customerTemp, dialogSubject.getValue(), dialogInteger.getValue()));
                     dialog.close();
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("Customer details stored.");
+                    UI.getCurrent().navigate(CustomerView.class);
+                    Notification.show("Added "+dialogSubject.getValue().toString()+": "+dialogInteger.getValue().toString()+" to "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+
 
                 });
                 Button cancelButton = new Button("Cancel", event -> {
@@ -225,6 +234,61 @@ public class CustomerView extends Div implements BeforeEnterObserver {
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to add the customersubject details.");
             }
+
+        });
+
+        deleteSubject.addClickListener(e->{
+            if(!grid.getSelectedItems().iterator().hasNext()) {
+                Notification.show("Bitte wählen Sie einen Schüler aus");
+                return;
+            }
+            try {
+                if (this.customer == null) {
+                    this.customer = new Customer();
+                }
+                binder.writeBean(this.customer);
+                Customer customerTemp = (Customer) grid.getSelectedItems().toArray()[0];
+                com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+
+                FormLayout formLayout = new FormLayout();
+                Select<CustomerSubject> dialogSubject = new Select<CustomerSubject>();
+                dialogSubject.setLabel("Fach");
+                //TODO fix list and binary type in database
+                dialogSubject.setItems(customerTemp.getSubjects());
+                //IntegerField dialogInteger = new IntegerField("Kontingent");
+                //dialogInteger.hasControls();
+                //dialogInteger.setLabel("");
+                Button dialogDelete = new Button("Löschen");
+                dialogDelete.addClickListener(ev -> {
+                if(dialogSubject.getValue() == null) return;
+
+                    Notification.show("deleted "+dialogSubject.getValue().toString()+" from "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                    dialog.close();
+
+                });
+                Button cancelButton = new Button("Cancel", event -> {
+
+                    dialog.close();
+                });
+                //dialog.add(new Text("Close me with the esc-key or an outside click"));
+                formLayout.add(dialogSubject);
+
+                formLayout.add(dialogDelete);
+                formLayout.add(cancelButton);
+                dialog.add(formLayout);
+                dialog.setWidth("500px");
+                dialog.setHeight("300px");
+                dialog.open();
+                clearForm();
+                refreshGrid();
+                //Notification.show("Customer details deleted.");
+                //this.customer=null;
+                UI.getCurrent().navigate(CustomerView.class);
+
+            } catch (ValidationException validationException) {
+                Notification.show("An exception happened while trying to delete the customersubject details.");
+            }
+
 
         });
 
@@ -269,7 +333,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         invoiceStreet = new TextField("Rechnungsadresse");
         invoiceCity = new TextField("Rechnungsstadt");
         invoiceZipcode = new TextField("Rechnungs-PLZ");
-        //subjects = new MultiSelectListBox<CustomerSubject>();
+        //subjects = new MultiselectComboBox<CustomerSubject>();
+        //subjects.setLabel("Fächer");
         //subjects.setItems(customer.getSubjects());
 
 
@@ -278,7 +343,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode,};
+        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -298,7 +363,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         addSubject.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        buttonLayout.add(save, cancel,delete,addSubject);
+        deleteSubject.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        buttonLayout.add(save, cancel,delete,addSubject,deleteSubject);
         editorLayoutDiv.add(buttonLayout);
     }
 

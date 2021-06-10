@@ -3,6 +3,7 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -17,7 +18,8 @@ public class CustomerSubject {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("customerId")
-    @JoinColumn(name = "customer_id", columnDefinition = "CHAR(36)")
+    @JoinColumn(name = "customer_id")
+    @Type(type = "uuid-char")
     @EqualsAndHashCode.Exclude
     private Customer customer;
 

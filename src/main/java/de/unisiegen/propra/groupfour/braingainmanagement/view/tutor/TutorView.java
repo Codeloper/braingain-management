@@ -19,8 +19,10 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.*;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
@@ -50,6 +52,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
     private TextField bic;
     private TextField iban;
     private MultiselectComboBox<Subject> subjects;
+    private MultiselectComboBox<Customer> customers;
     //private DatePicker dateOfBirth;
     //private TextField occupation;
     //private Checkbox important;
@@ -66,11 +69,13 @@ public class TutorView extends Div implements BeforeEnterObserver {
 
 
     private SubjectService subjectService;
+    private CustomerService customerService;
 
-    public TutorView(@Autowired TutorService tutorService,@Autowired SubjectService subjectService) {
+    public TutorView(@Autowired TutorService tutorService,@Autowired SubjectService subjectService,@Autowired CustomerService customerService) {
         addClassNames("tutoren-view", "flex", "flex-col", "h-full");
         this.tutorService = tutorService;
         this.subjectService= subjectService;
+        this.customerService = customerService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -204,13 +209,16 @@ public class TutorView extends Div implements BeforeEnterObserver {
         subjects = new MultiselectComboBox<Subject>();
         subjects.setLabel("Fächer");
         subjects.setItems(subjectService.fetchAll());
+        customers = new MultiselectComboBox<Customer>();
+        customers.setLabel("Schüler");
+        customers.setItems(customerService.fetchAll());
 
 
         //dateOfBirth = new DatePicker("Date Of Birth");
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban,subjects};
+        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban,subjects,customers};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

@@ -9,6 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,7 +26,7 @@ public class Customer extends Person {
     @OneToMany(mappedBy = "customer")
     @LazyCollection(LazyCollectionOption.FALSE)
     @EqualsAndHashCode.Exclude
-    private Collection<CustomerSubject> subjects;
+    private Set<CustomerSubject> subjects;
 
     //@ManyToMany(mappedBy = "customers")
     //@LazyCollection(LazyCollectionOption.TRUE)
