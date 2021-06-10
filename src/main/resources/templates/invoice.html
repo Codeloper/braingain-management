@@ -10,7 +10,7 @@
             margin: 10mm 10mm 10mm 10mm;
         }
         table{
-            width: 90%;
+            width: 100%;
             border-collapse: collapse;
             font-family: Arial;
             margin-left: auto;
@@ -98,8 +98,7 @@
 
         <div class="invoiceHead TopMid">
             Empfänger: <span th:text="${invoice.recipient.getFullName()}"></span>
-            <br>
-            Tutor:
+
         </div>
 
         <div class="invoiceHead TopRight">
@@ -110,12 +109,13 @@
     <table>
         <thead>
             <tr>
-                <th width=10%>Pos</th>
-                <th width=32%>Leistung</th>
+                <th width=5%>Pos</th>
+                <th width=25%>Leistung</th>
                 <th width=12%>Datum</th>
+                <th width=22%>Tutor</th>
                 <th width=12%>Einzelpreis</th>
-                <th width=12%>Anzahl h</th>
-                <th width=20%>Gesamtpreis</th>
+                <th width=10%>Anzahl h</th>
+                <th width=12%>Gesamtpreis</th>
             </tr>
         </thead>
 
@@ -124,9 +124,10 @@
             <td th:text="${iter.index + 1}">1</td>
             <td>Nachhilfestunde <span th:text="${lesson.subject.id}">Mathe</span></td>
             <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}"></td>
+            <td th:text="${lesson.tutor.getFullName()}"></td>
             <td> <span th:text="${lesson.subject.customerPrice}"></span> EUR</td>
             <td th:text="${lesson.count}"></td>
-            <td> <span th:text="${lesson.total()}"></span> EUR</td>
+            <td> <span th:text="${lesson.customerTotal()}"></span> EUR</td>
 
         </tr>
         </tbody>
@@ -134,7 +135,7 @@
 
     <div id="invoiceSum">
         <br>
-        Gesamtbetrag: <span th:text="${invoice.total()}">123,91</span> EUR
+        Gesamtbetrag: <span th:text="${invoice.customerInvoiceTotal()}">123,91</span> EUR
     </div>
 
 </body>

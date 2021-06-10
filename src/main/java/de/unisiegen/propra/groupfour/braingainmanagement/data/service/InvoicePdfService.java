@@ -20,7 +20,7 @@ public class InvoicePdfService {
     private SpringTemplateEngine springTemplateEngine;
 
     private void createPdf(boolean customer, Invoice invoice) throws IOException {
-        try (final OutputStream os = new FileOutputStream("invoice.pdf")) {
+        try (final OutputStream os = new FileOutputStream(customer ? "customerInvoice.pdf" : "tutorInvoice.pdf")) {
             final Context context = new Context();
             context.setVariable("invoice", invoice);
 

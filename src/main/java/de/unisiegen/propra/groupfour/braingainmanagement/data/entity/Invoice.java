@@ -24,11 +24,17 @@ public class Invoice {
     private Collection<Lesson> lessons;
 
     /**
-     * Calculates total sum of invoice.
+     * Calculates total sum of invoice for customers.
      * @return sum of all lesson totals
      */
-    public double total() {
-        return lessons.stream().mapToDouble(Lesson::total).sum();
+    public double customerInvoiceTotal() {
+        return lessons.stream().mapToDouble(Lesson::customerTotal).sum();
     }
+
+    /**
+     * Calculates total sum of invoice for tutors.
+     * @return sum of all lesson totals
+     */
+    public double tutorInvoiceTotal(){return lessons.stream().mapToDouble(Lesson::tutorTotal).sum();}
 
 }
