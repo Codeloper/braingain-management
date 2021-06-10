@@ -73,7 +73,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
     //private TextField occupation;
     //private Checkbox important;
     // TODO: get from Spring security session
-    private Tutor tutorOBJECT;// new Tutor("Maik","Gottfried","s","s","s","s","s","s","s");
+    private Tutor tutorOBJECT;
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
