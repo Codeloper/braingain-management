@@ -27,6 +27,7 @@ import com.vaadin.flow.data.binder.Binder;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.CustomerSubjectRepository;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
@@ -77,10 +78,14 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
     private CustomerService customerService;
     private SubjectService subjectService;
-    public CustomerView(@Autowired CustomerService customerService,@Autowired SubjectService subjectService) {
+
+    private CustomerSubjectRepository customerSubjectRepository;
+
+    public CustomerView(@Autowired CustomerService customerService, @Autowired SubjectService subjectService, @Autowired CustomerSubjectRepository customerSubjectRepository) {
         addClassNames("schüler-view", "flex", "flex-col", "h-full");
         this.customerService = customerService;
         this.subjectService= subjectService;
+        this.customerSubjectRepository = customerSubjectRepository;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -178,8 +183,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
         });
 
-        addSubject.addClickListener(e ->{
-            if(grid.getSelectedItems().iterator().hasNext()==false) {
+            addSubject.addClickListener(e-> {
+            if(!grid.getSelectedItems().iterator().hasNext()) {
                 Notification.show("Bitte wählen Sie einen Schüler aus");
                 return;
             }
@@ -188,7 +193,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
                     this.customer = new Customer();
                 }
                 binder.writeBean(this.customer);
-                Customer customerTemp = (Customer) grid.getSelectedItems().toArray()[0];
+                Customer customerTemp = customerService.get(((Customer) grid.getSelectedItems().toArray()[0]).getId()).get();
                 com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
 
                 FormLayout formLayout = new FormLayout();
