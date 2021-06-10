@@ -1,5 +1,6 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.view.lessons;
 
+import com.mysql.cj.xdevapi.Collection;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.UI;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -22,9 +24,11 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Lesson;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.LessonService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
@@ -38,12 +42,16 @@ import java.util.Optional;
 //@RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Stunden")
 public class LessonView extends Div implements BeforeEnterObserver {
+    //TODO Grid Datenquelle ändern für spezifischen Tutor
     private final static String LESSON_ID = "LessonID";
     private final static String LESSON_EDIT_ROUTE_TEMPLATE = "lessons/%s/edit";
     private Grid<Lesson> grid = new Grid<>(Lesson.class, false);
 
     private DatePicker date;
     private IntegerField count;
+    private Select<Customer> customer;
+    private Select<Subject> subject;
+    private Select<Tutor> tutor;
 
     /*
     private TextField prename;
@@ -60,6 +68,8 @@ public class LessonView extends Div implements BeforeEnterObserver {
     //private DatePicker dateOfBirth;
     //private TextField occupation;
     //private Checkbox important;
+    // TODO: get from Spring security session
+    private Tutor tutorOBJECT;// new Tutor("Maik","Gottfried","s","s","s","s","s","s","s");
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
@@ -85,7 +95,10 @@ public class LessonView extends Div implements BeforeEnterObserver {
 
         // Configure Grid
         grid.addColumn("date").setHeader("Datum").setAutoWidth(true);
+        grid.addColumn("customer").setHeader("Schüler").setAutoWidth(true);
+        grid.addColumn("subject").setHeader("Fach").setAutoWidth(true);
         grid.addColumn("count").setHeader("Stundenanzahl").setAutoWidth(true);
+
         /*grid.addColumn("phone").setHeader("Telefon").setAutoWidth(true);
         grid.addColumn("email").setHeader("Email").setAutoWidth(true);
         grid.addColumn("street").setHeader("Straße").setAutoWidth(true);
@@ -197,11 +210,24 @@ public class LessonView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        tutor = new Select<Tutor>();
+        tutor.setLabel("Tutor");
+        tutor.setItems(tutorOBJECT);
+        tutor.setValue(tutorOBJECT);
         date = new DatePicker("Datum");
         date.setValue(LocalDate.now());
         count = new IntegerField("Stundenanzahl");
         count.hasControls();
         count.setMin(0);
+
+        customer = new Select<Customer>();
+        customer.setLabel("Schüler");
+
+        customer.setItems(tutorOBJECT.getCustomers());
+
+        subject = new Select<Subject>();
+        subject.setLabel("Fach");
+        subject.setItems(tutorOBJECT.getSubjects());
         /*prename = new TextField("Vorname");
         surname = new TextField("Nachname");
         phone = new TextField("Telefon");
@@ -219,7 +245,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{date,count};
+        Component[] fields = new Component[]{date,customer,subject,count,tutor};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

@@ -26,4 +26,10 @@ public class Tutor extends Person {
         this.bic = bic;
         this.iban = iban;
     }
+
+    @Override
+    public String toString(){
+        return getFullName();
+
+    }
 }
