@@ -2,20 +2,26 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.service;
 
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.*;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.LessonRepository;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.TutorRepository;
 import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.CustomerSubjectNotLearnedException;
 import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.CustomerSubjectQuotaExceededException;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.vaadin.artur.helpers.CrudService;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class LessonService {
+public class LessonService extends CrudService<Lesson, UUID> {
 
-    @Autowired
-    private LessonRepository repository;
+    @Getter(AccessLevel.PROTECTED)
+    private final LessonRepository repository;
 
     /**
      * Books a new lesson.
@@ -50,8 +56,18 @@ public class LessonService {
      * @param month month of lessons
      * @return number of matching lessons
      */
+
+    //TODO noch abändern
     public int countLessonsInSubjectByCustomerInMonth(Customer customer, Subject subject, Month month) {
-        return repository.countCustomerSubjectQuota(customer, subject, month.getValue());
+        return 0;//repository.countCustomerSubjectQuota(customer, subject, month.getValue());
+    }
+
+    public LessonService(@Autowired LessonRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<Lesson> fetchAll() {
+        return repository.findAll();
     }
 
 }

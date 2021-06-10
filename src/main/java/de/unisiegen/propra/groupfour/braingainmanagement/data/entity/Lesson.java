@@ -3,6 +3,7 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class Lesson implements Comparable<Lesson> {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(nullable = false, updatable = false)
+    @Type(type = "uuid-char")
     private UUID id;
 
     @Column(nullable = false)
