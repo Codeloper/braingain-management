@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@PWA(name = "Braingain Management", shortName = "Braingain", enableInstallPrompt = false)
+@PWA(name = "Braingain Management", shortName = "Braingain", enableInstallPrompt = true)
 @Theme(themeFolder = "app", variant = Lumo.DARK)
 public class MainView extends AppLayout {
 
@@ -57,13 +57,12 @@ public class MainView extends AppLayout {
         header.setWidthFull();
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setId("header");
-        Image logo = new Image("images/logo.png", "My App logo");
+        Image logo = new Image("images/logo.png", "My App");
         logo.setId("logo");
         header.add(logo);
         Avatar avatar = new Avatar();
         avatar.setName("Username");
         avatar.setId("avatar");
-        header.add(new H1("Braingain-Management"));
         header.add(avatar);
         return header;
     }
