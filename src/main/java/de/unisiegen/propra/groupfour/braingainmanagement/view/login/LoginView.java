@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import java.util.Collections;
 
 @Route("login")
-@PageTitle("Login | Vaadin CRM")
+@PageTitle("Login | braingain")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
 	private LoginForm login = new LoginForm();
