@@ -9,6 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,7 +22,7 @@ public class Tutor extends Person {
 
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    private Collection<Subject> subjects;
+    private Set<Subject> subjects;
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)

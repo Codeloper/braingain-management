@@ -19,10 +19,13 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.*;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +49,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
     private TextField zipcode;
     private TextField bic;
     private TextField iban;
+    private MultiselectComboBox<Subject> subjects;
     //private DatePicker dateOfBirth;
     //private TextField occupation;
     //private Checkbox important;
@@ -60,9 +64,13 @@ public class TutorView extends Div implements BeforeEnterObserver {
 
     private final TutorService tutorService;
 
-    public TutorView(@Autowired TutorService tutorService) {
+
+    private SubjectService subjectService;
+
+    public TutorView(@Autowired TutorService tutorService,@Autowired SubjectService subjectService) {
         addClassNames("tutoren-view", "flex", "flex-col", "h-full");
         this.tutorService = tutorService;
+        this.subjectService= subjectService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -193,13 +201,16 @@ public class TutorView extends Div implements BeforeEnterObserver {
         zipcode = new TextField("PLZ");
         bic = new TextField("BIC");
         iban = new TextField("IBAN");
+        subjects = new MultiselectComboBox<Subject>();
+        subjects.setLabel("Fächer");
+        subjects.setItems(subjectService.fetchAll());
 
 
         //dateOfBirth = new DatePicker("Date Of Birth");
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban};
+        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban,subjects};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

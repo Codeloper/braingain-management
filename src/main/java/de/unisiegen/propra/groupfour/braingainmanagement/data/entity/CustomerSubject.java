@@ -35,4 +35,9 @@ public class CustomerSubject {
         this.quota = quota;
     }
 
+    @Override
+    public String toString(){
+        return this.subject.toString()+" ("+this.quota+")";
+    }
+
 }
