@@ -1,6 +1,5 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.view.lessons;
 
-import com.mysql.cj.xdevapi.Collection;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.UI;
@@ -16,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -28,17 +26,13 @@ import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Lesson;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.LessonService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
-import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -86,6 +80,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
     private final LessonService lessonService;
 
     public LessonView(@Autowired LessonService lessonService, @Autowired TutorService tutorService) {
+        // TODO: FIX
         tutorOBJECT = tutorService.fetchAll().get(0);
 
         addClassNames("lesson-view", "flex", "flex-col", "h-full");

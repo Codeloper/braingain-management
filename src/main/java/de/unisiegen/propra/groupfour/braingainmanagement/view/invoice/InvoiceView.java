@@ -114,6 +114,7 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
                 refreshGrid();
                 Notification.show("Rechnung details stored.");
                 UI.getCurrent().navigate(InvoiceView.class);
+                UI.getCurrent().getPage().reload();
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the Rechnung details.");
             }
@@ -235,7 +236,6 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
 
     private void populateForm(Invoice value) {
         this.invoice = value;
-       // binder.readBean(this.invoice);
-
+        binder.readBean(this.invoice);
     }
 }

@@ -3,7 +3,9 @@ package de.unisiegen.propra.groupfour.braingainmanagement.view.main;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -64,6 +66,12 @@ public class MainView extends AppLayout {
         avatar.setName("Username");
         avatar.setId("avatar");
         header.add(avatar);
+
+        Anchor logout = new Anchor("logout", "Log out");
+        header.add(logout);
+
+        addToNavbar(header);
+
         return header;
     }
 
