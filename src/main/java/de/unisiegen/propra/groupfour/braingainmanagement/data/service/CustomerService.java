@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class CustomerService extends CrudService<Customer, UUID> {
 
-    @Getter(AccessLevel.PUBLIC)
+    @Getter(AccessLevel.PROTECTED)
     private final CustomerRepository repository;
 
     public CustomerService(@Autowired CustomerRepository repository) { this.repository = repository; }
