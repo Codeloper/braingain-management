@@ -28,6 +28,7 @@ public class Customer extends Person {
     @EqualsAndHashCode.Exclude
     private Set<CustomerSubject> subjects;
 
+
     //@ManyToMany(mappedBy = "customers")
     //@LazyCollection(LazyCollectionOption.TRUE)
     //private Collection<Tutor> tutors;
@@ -43,6 +44,11 @@ public class Customer extends Person {
 
         subjects.add(new CustomerSubject(this, subject, quota));
     }
+    public void deleteSubject(CustomerSubject customerSubject){
+        if(subjects == null) return;
+
+        subjects.remove(customerSubject);
+    };
 
     @Override
     public String toString() {

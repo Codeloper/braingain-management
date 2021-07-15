@@ -252,7 +252,9 @@ public class CustomerView extends Div implements BeforeEnterObserver {
                     this.customer = new Customer();
                 }
                 binder.writeBean(this.customer);
-                Customer customerTemp = (Customer) grid.getSelectedItems().toArray()[0];
+                Customer customerTemp =  customerService.get(((Customer) grid.getSelectedItems().toArray()[0]).getId()).get();//(Customer) grid.getSelectedItems().toArray()[0];
+               // Notification.show("Open Dialog for customer: "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                customerSubjectRepository.findAllByCustomerEquals(customerTemp).toArray();
                 com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
 
                 FormLayout formLayout = new FormLayout();
@@ -265,10 +267,21 @@ public class CustomerView extends Div implements BeforeEnterObserver {
                 //dialogInteger.setLabel("");
                 Button dialogDelete = new Button("Löschen");
                 dialogDelete.addClickListener(ev -> {
-                if(dialogSubject.getValue() == null) return;
 
-                    Notification.show("deleted "+dialogSubject.getValue().toString()+" from "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                if(dialogSubject.getValue()==null) {
+                    Notification.show("Select a Subject to be deleted",3000,Notification.Position.BOTTOM_START);
+                    return;
+
+                }
+                    //Notification.show(dialogSubject.getValue().getSubject().toString(),3000,Notification.Position.BOTTOM_START);
+                    //customerTemp.deleteSubject(dialogSubject.getValue());
+                    customerSubjectRepository.delete(dialogSubject.getValue());
                     dialog.close();
+                    clearForm();
+                    refreshGrid();
+                    Notification.show("deleted "+dialogSubject.getValue().toString()+" from "+customerTemp.getFullName(),3000,Notification.Position.BOTTOM_START);
+                    UI.getCurrent().navigate(CustomerView.class);
+
 
                 });
                 Button cancelButton = new Button("Cancel", event -> {
