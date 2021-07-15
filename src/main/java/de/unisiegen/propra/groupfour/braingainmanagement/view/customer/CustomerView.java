@@ -60,6 +60,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private TextField invoiceStreet;
     private TextField invoiceCity;
     private TextField invoiceZipcode;
+    private TextField annotation;
     //private NativeSelect subjects;
     //private MultiselectComboBox<CustomerSubject> subjects;
     //private DatePicker dateOfBirth;
@@ -106,6 +107,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         grid.addColumn("invoiceStreet").setHeader("Rechnungsadresse").setAutoWidth(true);
         grid.addColumn("invoiceCity").setHeader("Rechnungsstraße").setAutoWidth(true);
         grid.addColumn("invoiceZipcode").setHeader("Rechnungs-PLZ").setAutoWidth(true);
+        grid.addColumn("annotation").setHeader("Bemerkung").setAutoWidth(true);
         //grid.addColumn("address").setHeader("Adresse").setAutoWidth(true);
         //grid.addColumn("email").setHeader("Email").setAutoWidth(true);
         //grid.addColumn("contact").setHeader("Kontakt").setAutoWidth(true);
@@ -351,17 +353,9 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         invoiceStreet = new TextField("Rechnungsadresse");
         invoiceCity = new TextField("Rechnungsstadt");
         invoiceZipcode = new TextField("Rechnungs-PLZ");
-        //subjects = new MultiselectComboBox<CustomerSubject>();
-        //subjects.setLabel("Fächer");
-        //subjects.setItems(customer.getSubjects());
+        annotation = new TextField("Bemerkung");
 
-
-
-        //dateOfBirth = new DatePicker("Date Of Birth");
-        //occupation = new TextField("Occupation");
-        //important = new Checkbox("Important");
-        //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode};
+        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode,invoiceStreet,invoiceCity,invoiceZipcode,annotation};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
