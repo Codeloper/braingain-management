@@ -34,7 +34,7 @@ public class LessonService extends CrudService<Lesson, UUID> {
      * @throws CustomerSubjectQuotaExceededException Thrown if the customers quota for this subject is exceeded
      * @return created lesson
      */
-    public Lesson bookLesson(LocalDate date, int count, Tutor tutor, Customer customer, Subject subject) {
+    public Lesson bookLesson(LocalDate date, double count, Tutor tutor, Customer customer, Subject subject) {
         final Lesson lesson = new Lesson(date, count, tutor, customer, subject);
         final Optional<CustomerSubject> customerSubject = customer.getSubjects().stream().filter(s -> s.getSubject().equals(subject)).findAny();
 

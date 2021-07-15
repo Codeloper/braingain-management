@@ -13,10 +13,7 @@
       width: 100%;
       border-collapse: collapse;
       font-family: Arial;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 50px;
-      margin-bottom: 50px;
+      margin: 50px auto;
     }
 
     td, th{
@@ -32,12 +29,10 @@
     div{
       font-family: Arial;
       font-size: 12pt;
-
     }
 
     #paycheck{
       font-size: 20pt;
-
     }
 
     .paycheckHead{
@@ -57,7 +52,6 @@
 
     #paycheckSum{
       text-align: right;
-
       font-weight: bold;
     }
   </style>
@@ -111,6 +105,7 @@
 
 <div id="paycheckSum">
   <br>
+  Gesamtzahl Stunden: <span th:text="${invoice.lessons.size()}">12</span>
   Gesamtbetrag: <span th:text="${invoice.tutorInvoiceTotal()}"></span> EUR
 </div>
 

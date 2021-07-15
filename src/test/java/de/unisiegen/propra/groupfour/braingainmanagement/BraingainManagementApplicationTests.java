@@ -82,7 +82,7 @@ class BraingainManagementApplicationTests {
 		invoice.setDate(LocalDate.now());
 		invoice.setId("2020060801");
 		invoice.setRecipient(customer);
-		invoice.setLessons(Arrays.asList(new Lesson(LocalDate.now(), 2, tutor, customer, subject), new Lesson(LocalDate.now(), 1, tutor, customer, subject)));
+		invoice.setLessons(Arrays.asList(new Lesson(LocalDate.now(), 2.0, tutor, customer, subject), new Lesson(LocalDate.now(), 1.0, tutor, customer, subject)));
 		try {
 			invoicePdfService.createPdf(invoice);
 		} catch (IOException e) {

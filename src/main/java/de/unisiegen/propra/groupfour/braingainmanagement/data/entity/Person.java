@@ -12,7 +12,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
-public abstract class Person {
+public class Person {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -32,6 +32,8 @@ public abstract class Person {
 
     @Column(nullable = false, columnDefinition = "CHAR(5)")
     private String zipcode;
+
+    private String annotation;
 
     @OneToOne(mappedBy = "person")
     @PrimaryKeyJoinColumn

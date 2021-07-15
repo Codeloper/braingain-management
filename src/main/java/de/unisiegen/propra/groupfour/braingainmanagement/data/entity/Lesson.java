@@ -28,7 +28,7 @@ public class Lesson implements Comparable<Lesson> {
     private LocalDate date;
 
     @Column(nullable = false)
-    private Integer count;
+    private Double count;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Tutor tutor;
@@ -44,7 +44,7 @@ public class Lesson implements Comparable<Lesson> {
     @ToString.Exclude
     private Collection<Invoice> invoices;
 
-    public Lesson(LocalDate date, Integer count, Tutor tutor, Customer customer, Subject subject) {
+    public Lesson(LocalDate date, Double count, Tutor tutor, Customer customer, Subject subject) {
         this.date = date;
         this.count = count;
         this.tutor = tutor;

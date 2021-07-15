@@ -22,7 +22,6 @@
             padding: 6px;
             border: 1px solid black;
             text-align: center;
-
         }
 
         thead th{
@@ -32,22 +31,18 @@
         div{
             font-family: Arial;
             font-size: 12pt;
-
         }
         #invoice{
             font-size: 20pt;
-
         }
 
         .invoiceHead{
             float: left;
-
         }
 
         .TopLeft{
             text-align: left;
             width: 33%;
-
         }
 
         #invoiceWarning{
@@ -74,10 +69,8 @@
 
         #invoiceSum{
             text-align: right;
-
             font-weight: bold;
         }
-
     </style>
 </head>
 
@@ -128,13 +121,13 @@
             <td> <span th:text="${lesson.subject.customerPrice}"></span> EUR</td>
             <td th:text="${lesson.count}"></td>
             <td> <span th:text="${lesson.customerTotal()}"></span> EUR</td>
-
         </tr>
         </tbody>
     </table>
 
     <div id="invoiceSum">
         <br>
+        Gesamtzahl Stunden: <span th:text="${invoice.lessons.size()}">12</span>
         Gesamtbetrag: <span th:text="${invoice.customerInvoiceTotal()}">123,91</span> EUR
     </div>
 
