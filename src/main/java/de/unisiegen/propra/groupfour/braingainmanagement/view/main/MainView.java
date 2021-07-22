@@ -88,7 +88,41 @@ public class MainView extends AppLayout {
         Avatar avatar = new Avatar();
         avatar.setName("Username");
         avatar.setId("avatar");
-        header.add(avatar);
+        Div tempDiv = new Div();
+        tempDiv.add(avatar);
+
+        tempDiv.addClickListener(e -> {
+            com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
+
+            HorizontalLayout formLayout = new HorizontalLayout();
+
+
+
+
+            Anchor logout = new Anchor("logout", "Log out");
+            /*
+            Button dialogLogout = new Button("Ausloggen");
+            dialogLogout.addClickListener(ev -> {
+
+                dialog.close();
+                UI.getCurrent().navigate("/logout");
+                UI.getCurrent().na
+
+            });
+*/          //TODO Change Password input fields missing
+            formLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+            formLayout.add(logout);
+            dialog.add(formLayout);
+            dialog.setWidth("500px");
+            dialog.setHeight("300px");
+            dialog.open();
+                //System.out.println("TEST");
+
+        });
+
+
+        header.add(tempDiv);
+
 
         //Anchor logout = new Anchor("logout", "Log out");
         //header.add(logout);
