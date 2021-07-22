@@ -23,6 +23,7 @@ import com.vaadin.flow.router.Route;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Person;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Invoice;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.*;
+import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.LessonAlreadyInvoicedException;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -117,6 +118,10 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
                 UI.getCurrent().getPage().reload();
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the Rechnung details.");
+            }
+            catch(LessonAlreadyInvoicedException exception){
+                Notification.show("Mindestens eine Stunde im ausgewählten Zeitraum wurde bereits abgerechnet");
+
             }
         });
 

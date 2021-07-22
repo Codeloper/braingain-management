@@ -33,11 +33,14 @@ public class Person {
     @Column(nullable = false, columnDefinition = "CHAR(5)")
     private String zipcode;
 
-    private String annotation;
-
     @OneToOne(mappedBy = "person")
     @PrimaryKeyJoinColumn
+    @EqualsAndHashCode.Exclude
     private User user;
+
+    private String annotation;
+
+
 
     public Person(String prename, String surname, String phone, String email, String street, String city, String zipcode) {
         this.prename = prename;
@@ -53,4 +56,8 @@ public class Person {
         return prename + " " + surname;
     }
 
+    @Override
+    public String toString(){
+        return prename + " " + surname;
+    }
 }

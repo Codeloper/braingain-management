@@ -1,4 +1,4 @@
-package de.unisiegen.propra.groupfour.braingainmanagement.view.tutor;
+package de.unisiegen.propra.groupfour.braingainmanagement.view.user;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
@@ -11,71 +11,63 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.router.*;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.*;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.*;
+import de.unisiegen.propra.groupfour.braingainmanagement.security.SecurityConfiguration;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Route(value = "tutors/:PersonID?/:action?(edit)", layout = MainView.class)
+@Route(value = "users/:UserID?/:action?(edit)", layout = MainView.class)
 //@RouteAlias(value = "", layout = MainView.class)
-@PageTitle("Tutoren")
-public class TutorView extends Div implements BeforeEnterObserver {
+@PageTitle("User")
+public class UserView extends Div implements BeforeEnterObserver {
+    private final static String USER_ID = "UserID";
+    private final static String USER_EDIT_ROUTE_TEMPLATE = "users/%s/edit";
 
-    private final static String TUTOR_ID = "PersonID";
-    private final static String TUTOR_EDIT_ROUTE_TEMPLATE = "tutors/%s/edit";
+    private Grid<User> grid = new Grid<>(User.class, false);
 
-    private Grid<Tutor> grid = new Grid<>(Tutor.class, false);
 
-    private TextField prename;
-    private TextField surname;
-    private TextField phone;
     private TextField email;
-    private TextField street;
-    private TextField city;
-    private TextField zipcode;
-    private TextField bic;
-    private TextField iban;
-    private MultiselectComboBox<Subject> subjects;
-    private MultiselectComboBox<Customer> customers;
-    //private DatePicker dateOfBirth;
-    //private TextField occupation;
-    //private Checkbox important;
+    private TextField password;
+    private Select<Person> tutor;
+
 
     private Button cancel = new Button("Abbrechen");
     private Button save = new Button("Speichern");
     private Button delete = new Button("Löschen");
 
-    private Binder<Tutor> binder;
+    private Binder<User> binder;
 
-    private Tutor tutor;
+    private User user;
+
+    private final UserService userService;
 
     private final TutorService tutorService;
 
-
-    private SubjectService subjectService;
-    private CustomerService customerService;
-
-    public TutorView(@Autowired TutorService tutorService,@Autowired SubjectService subjectService,@Autowired CustomerService customerService) {
-        addClassNames("tutoren-view", "flex", "flex-col", "h-full");
+    public UserView(@Autowired UserService userService, @Autowired TutorService tutorService) {
+        addClassNames("user-view", "flex", "flex-col", "h-full");
+        this.userService = userService;
         this.tutorService = tutorService;
-        this.subjectService= subjectService;
-        this.customerService = customerService;
+        //this.useService= subjectService;
+        //this.customerService = customerService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -86,30 +78,24 @@ public class TutorView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("prename").setHeader("Vorname").setAutoWidth(true);
-        grid.addColumn("surname").setHeader("Nachname").setAutoWidth(true);
-        grid.addColumn("phone").setHeader("Telefon").setAutoWidth(true);
+
         grid.addColumn("email").setHeader("Email").setAutoWidth(true);
-        grid.addColumn("street").setHeader("Straße").setAutoWidth(true);
-        grid.addColumn("city").setHeader("Stadt").setAutoWidth(true);
-        grid.addColumn("zipcode").setHeader("PLZ").setAutoWidth(true);
-        grid.addColumn("bic").setHeader("BIC").setAutoWidth(true);
-        grid.addColumn("iban").setHeader("IBAN").setAutoWidth(true);
+        grid.addColumn("person").setHeader("Tutor").setAutoWidth(true);
         //grid.addColumn("occupation").setAutoWidth(true);
 
         // TODO: improve, idk what I have done
         grid.setDataProvider(DataProvider.fromCallbacks(query -> {
             query.getOffset();
             query.getLimit();
-            return tutorService.fetchAll().stream();
-        }, query -> tutorService.count()));
+            return userService.fetchAll().stream();
+        }, query -> userService.count()));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(TUTOR_EDIT_ROUTE_TEMPLATE, event.getValue().getId()));
+                UI.getCurrent().navigate(String.format(USER_EDIT_ROUTE_TEMPLATE, event.getValue().getEmail()));
             } else {
                 clearForm();
                 UI.getCurrent().navigate(TutorView.class);
@@ -117,11 +103,11 @@ public class TutorView extends Div implements BeforeEnterObserver {
         });
 
         // Configure Form
-        binder = new Binder<>(Tutor.class);
+        binder = new Binder<>(User.class);
 
         // Bind fields. This where you'd define e.g. validation rules
 
-        binder.bindInstanceFields(this);
+        //binder.bindInstanceFields(this);
 
         cancel.addClickListener(e -> {
             clearForm();
@@ -129,33 +115,39 @@ public class TutorView extends Div implements BeforeEnterObserver {
         });
 
         save.addClickListener(e -> {
+            binder.forField(email).bind(User::getEmail, User::setEmail);
+            binder.forField(tutor).bind(User::getPerson, User::setPerson);
+            binder.forField(password).bind(User::getPasswordHash, (user, password) -> user.setPasswordHash(SecurityConfiguration.passwordEncoder.encode(password)));
             try {
-                if (this.tutor == null) {
-                    this.tutor = new Tutor();
+                if (this.user == null) {
+                    this.user = new User();
                 }
-                binder.writeBean(this.tutor);
-                this.tutor.setAnnotation("");
-                tutorService.update(this.tutor);
+
+                binder.writeBean(this.user);
+                //this.user.setPasswordHash(passwordEncoder.encode("password.getValue()"));
+                //this.user.setAnnotation("");
+                this.user.setRole(User.Role.TUTOR);
+                userService.update(this.user);
                 clearForm();
                 refreshGrid();
-                Notification.show("Tutoren details stored.");
-                UI.getCurrent().navigate(TutorView.class);
+                Notification.show("User details stored.");
+                UI.getCurrent().navigate(UserView.class);
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the Tutoren details.");
             }
         });
         delete.addClickListener(e -> {
             try {
-                if (this.tutor == null) {
-                    this.tutor = new Tutor();
+                if (this.user == null) {
+                    this.user = new User();
                 }
-                binder.writeBean(this.tutor);
-                tutorService.delete(this.tutor.getId());
+                binder.writeBean(this.user);
+                userService.delete(this.user.getEmail());
                 clearForm();
                 refreshGrid();
-                Notification.show("Customer details deleted.");
+                Notification.show("User details deleted.");
                 //this.customer=null;
-                UI.getCurrent().navigate(TutorView.class);
+                UI.getCurrent().navigate(UserView.class);
 
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to delete the customer details.");
@@ -169,20 +161,20 @@ public class TutorView extends Div implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        Optional<String> tutorId = event.getRouteParameters().get(TUTOR_ID);
-        if (tutorId.isPresent()) {
+        Optional<String> userId = event.getRouteParameters().get(USER_ID);
+        if (userId.isPresent()) {
 
-            Optional<Tutor> tutorFromBackend = tutorService.get(UUID.fromString(tutorId.get()));
-            if (tutorFromBackend.isPresent()) {
-                populateForm(tutorFromBackend.get());
+            Optional<User> userFromBackend = userService.get(userId.get());
+            if (userFromBackend.isPresent()) {
+                populateForm(userFromBackend.get());
             } else {
                 Notification.show(
-                        String.format("The requested tutor was not found, ID = %s", tutorId.get()), 3000,
+                        String.format("The requested tutor was not found, ID = %s", userId.get()), 3000,
                         Notification.Position.BOTTOM_START);
                 // when a row is selected but the data is no longer available,
                 // refresh grid
                 refreshGrid();
-                event.forwardTo(TutorView.class);
+                event.forwardTo(UserView.class);
             }
         }
     }
@@ -197,28 +189,19 @@ public class TutorView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        prename = new TextField("Vorname");
-        surname = new TextField("Nachname");
-        phone = new TextField("Telefon");
+
         email = new TextField("Email");
-        street = new TextField("Straße");
-        city = new TextField("Stadt");
-        zipcode = new TextField("PLZ");
-        bic = new TextField("BIC");
-        iban = new TextField("IBAN");
-        subjects = new MultiselectComboBox<Subject>();
-        subjects.setLabel("Fächer");
-        subjects.setItems(subjectService.fetchAll());
-        customers = new MultiselectComboBox<Customer>();
-        customers.setLabel("Schüler");
-        customers.setItems(customerService.fetchAll());
+        tutor = new Select<>();
+        tutor.setLabel("Tutor");
+        tutor.setItems(tutorService.fetchAll().stream().map(t -> (Person) t));
+        password = new TextField("Passwort");
 
 
         //dateOfBirth = new DatePicker("Date Of Birth");
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban,subjects,customers};
+        Component[] fields = new Component[]{email, tutor, password};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -258,9 +241,9 @@ public class TutorView extends Div implements BeforeEnterObserver {
         populateForm(null);
     }
 
-    private void populateForm(Tutor value) {
-        this.tutor = value;
-        binder.readBean(this.tutor);
+    private void populateForm(User value) {
+        this.user = value;
+        binder.readBean(this.user);
 
     }
 }

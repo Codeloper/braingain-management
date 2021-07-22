@@ -1,29 +1,43 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.view.main;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.User;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.TutorLessonView.TutorLessonView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.CustomerView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.invoice.InvoiceView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.lessons.LessonView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.statistic.StatisticView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.user.UserView;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 /**
@@ -32,10 +46,12 @@ import java.util.Optional;
 @PWA(name = "Braingain Management", shortName = "Braingain", enableInstallPrompt = true)
 @Theme(themeFolder = "app", variant = Lumo.DARK)
 public class MainView extends AppLayout {
-
+    private Image logo;
     private final Tabs menu;
 
     public MainView() {
+        logo = new Image("images/logo.png", "My App");
+        logo.setId("logo");
         HorizontalLayout header = createHeader();
         menu = createMenuTabs();
         addToNavbar(createTopBar(header, menu));
@@ -48,7 +64,14 @@ public class MainView extends AppLayout {
         layout.setSpacing(false);
         layout.setPadding(false);
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        layout.add(header, menu);
+
+
+
+        layout.add(header);
+        layout.add(menu);
+
+
+
         return layout;
     }
 
@@ -59,18 +82,18 @@ public class MainView extends AppLayout {
         header.setWidthFull();
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setId("header");
-        Image logo = new Image("images/logo.png", "My App");
-        logo.setId("logo");
         header.add(logo);
+
+
         Avatar avatar = new Avatar();
         avatar.setName("Username");
         avatar.setId("avatar");
         header.add(avatar);
 
-        Anchor logout = new Anchor("logout", "Log out");
-        header.add(logout);
+        //Anchor logout = new Anchor("logout", "Log out");
+        //header.add(logout);
 
-        addToNavbar(header);
+
 
         return header;
     }
@@ -83,10 +106,9 @@ public class MainView extends AppLayout {
     }
 
     private static Tab[] getAvailableTabs() {
-        /*return new Tab[]{createTab("Schüler", SchülerView.class), createTab("Tutoren", TutorenView.class),
-                createTab("Fächer", FächerView.class), createTab("Stunden", StundenView.class),
-                createTab("Rechnungen", RechnungenView.class)};*/
-        return new Tab[]{createTab("Schüler", CustomerView.class),createTab("Tutoren", TutorView.class),createTab("Fächer", SubjectView.class),createTab("Stunden", LessonView.class),createTab("Abrechnungen", InvoiceView.class)};
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRole() == User.Role.ADMIN ?
+                new Tab[] {createTab("Schüler", CustomerView.class), createTab("Tutoren", TutorView.class), createTab("Fächer", SubjectView.class), createTab("Stunden", LessonView.class), createTab("Abrechnungen", InvoiceView.class), createTab("User", UserView.class),createTab("Statistik", StatisticView.class)}
+                : new Tab[] {createTab("Stunden", TutorLessonView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

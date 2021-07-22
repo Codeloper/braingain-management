@@ -1,4 +1,4 @@
-package de.unisiegen.propra.groupfour.braingainmanagement.view.lessons;
+package de.unisiegen.propra.groupfour.braingainmanagement.view.TutorLessonView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
@@ -14,7 +14,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -23,23 +22,28 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.*;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.LessonService;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.lessons.LessonView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-@Route(value = "lessons/:LessonID?/:action?(edit)", layout = MainView.class)
+@Route(value = "tutorlessons/:LessonID?/:action?(edit)", layout = MainView.class)
 //@RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Stunden")
-public class LessonView extends Div implements BeforeEnterObserver {
+public class TutorLessonView extends Div implements BeforeEnterObserver {
     //TODO Grid Datenquelle ändern für spezifischen Tutor
     private final static String LESSON_ID = "LessonID";
     private final static String LESSON_EDIT_ROUTE_TEMPLATE = "lessons/%s/edit";
@@ -49,7 +53,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
     private NumberField count;
     private Select<Customer> customer;
     private Select<Subject> subject;
-    private Select<Tutor> tutor;
+    //private Select<Tutor> tutor;
 
     /*
     private TextField prename;
@@ -78,18 +82,12 @@ public class LessonView extends Div implements BeforeEnterObserver {
     private Lesson lesson;
 
     private final LessonService lessonService;
-    private final TutorService tutorService;
-    private final CustomerService customerService;
-    private final SubjectService subjectService;
-    public LessonView(@Autowired LessonService lessonService, @Autowired TutorService tutorService, @Autowired CustomerService customerService, @Autowired SubjectService subjectService) {
-        // TODO: FIX
-        tutorOBJECT = tutorService.fetchAll().get(0);
 
+    public TutorLessonView(@Autowired LessonService lessonService, @Autowired TutorService tutorService) {
+        tutorOBJECT = (Tutor) ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPerson();
+        System.out.println(tutorOBJECT.getFullName());
         addClassNames("lesson-view", "flex", "flex-col", "h-full");
         this.lessonService = lessonService;
-        this.tutorService = tutorService;
-        this.customerService = customerService;
-        this.subjectService = subjectService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -104,7 +102,6 @@ public class LessonView extends Div implements BeforeEnterObserver {
         grid.addColumn("customer").setHeader("Schüler").setAutoWidth(true);
         grid.addColumn("subject").setHeader("Fach").setAutoWidth(true);
         grid.addColumn("count").setHeader("Stundenanzahl").setAutoWidth(true);
-        grid.addColumn("tutor").setHeader("Tutor").setAutoWidth(true);
 
         /*grid.addColumn("phone").setHeader("Telefon").setAutoWidth(true);
         grid.addColumn("email").setHeader("Email").setAutoWidth(true);
@@ -117,12 +114,14 @@ public class LessonView extends Div implements BeforeEnterObserver {
          */
         //grid.addColumn("occupation").setAutoWidth(true);
 
-        // TODO: improve, idk what I have done
+        // TODO: improve, idk what I have done | Filter überprüfen
+        System.out.println(lessonService.fetchAllByTutor(this.tutorOBJECT).size());
         grid.setDataProvider(DataProvider.fromCallbacks(query -> {
             query.getOffset();
             query.getLimit();
-            return lessonService.fetchAll().stream();
-        }, query -> lessonService.count()));
+            return lessonService.fetchAllByTutor(this.tutorOBJECT).stream();
+        }, query -> lessonService.fetchAllByTutor(this.tutorOBJECT).size()));
+
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
@@ -155,6 +154,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
                     this.lesson = new Lesson();
                 }
                 binder.writeBean(this.lesson);
+                this.lesson.setTutor(tutorOBJECT);
 
                 lessonService.update(this.lesson);
                 clearForm();
@@ -187,7 +187,6 @@ public class LessonView extends Div implements BeforeEnterObserver {
 
         });
     }
-
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Optional<String> lessonId = event.getRouteParameters().get(LESSON_ID);
@@ -217,10 +216,10 @@ public class LessonView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        tutor = new Select<Tutor>();
-        tutor.setLabel("Tutor");
-        tutor.setItems(tutorService.fetchAll());
-        tutor.setValue(tutorOBJECT);
+        //tutor = new Select<Tutor>();
+        //tutor.setLabel("Tutor");
+        //tutor.setItems(tutorOBJECT);
+        //tutor.setValue(tutorOBJECT);
         date = new DatePicker("Datum");
         date.setValue(LocalDate.now());
         count = new NumberField("Stundenanzahl");
@@ -230,11 +229,11 @@ public class LessonView extends Div implements BeforeEnterObserver {
         customer = new Select<Customer>();
         customer.setLabel("Schüler");
 
-        customer.setItems(customerService.fetchAll());
+        customer.setItems(tutorOBJECT.getCustomers());
 
         subject = new Select<Subject>();
         subject.setLabel("Fach");
-        subject.setItems(subjectService.fetchAll());
+        subject.setItems(tutorOBJECT.getSubjects());
         /*prename = new TextField("Vorname");
         surname = new TextField("Nachname");
         phone = new TextField("Telefon");
@@ -252,7 +251,7 @@ public class LessonView extends Div implements BeforeEnterObserver {
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{date,customer,subject,count,tutor};
+        Component[] fields = new Component[]{date,customer,subject,count};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -297,6 +296,4 @@ public class LessonView extends Div implements BeforeEnterObserver {
         binder.readBean(this.lesson);
 
     }
-
-
 }

@@ -70,4 +70,10 @@ public class LessonService extends CrudService<Lesson, UUID> {
         return repository.findAll();
     }
 
+    public List<Lesson> fetchAllByTutor(Tutor tutor){
+        return (List<Lesson>) repository.findAllByTutorEquals(tutor);
+
+    }
+
+
 }

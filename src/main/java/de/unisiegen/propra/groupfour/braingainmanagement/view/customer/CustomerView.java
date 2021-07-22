@@ -3,6 +3,9 @@ package de.unisiegen.propra.groupfour.braingainmanagement.view.customer;
 import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -18,26 +21,36 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.data.binder.Binder;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.User;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.CustomerSubjectRepository;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.CustomerService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.TutorLessonView.TutorLessonView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.invoice.InvoiceView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.lessons.LessonView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
+import de.unisiegen.propra.groupfour.braingainmanagement.view.user.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 @Route(value = "customer/:personID?/:action?(edit)", layout = MainView.class)
@@ -53,7 +66,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
     private TextField prename;
     private TextField surname;
     private TextField phone;
-    private TextField email;
+    private EmailField email;
     private TextField street;
     private TextField city;
     private TextField zipcode;
@@ -84,6 +97,16 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
     public CustomerView(@Autowired CustomerService customerService, @Autowired SubjectService subjectService, @Autowired CustomerSubjectRepository customerSubjectRepository) {
         addClassNames("schüler-view", "flex", "flex-col", "h-full");
+
+        /*
+        if(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRole() == User.Role.ADMIN ){
+
+        }else{
+            UI.getCurrent().navigate(CustomerView.class);
+        }
+*/
+
+
         this.customerService = customerService;
         this.subjectService= subjectService;
         this.customerSubjectRepository = customerSubjectRepository;
@@ -141,6 +164,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
         binder.bindInstanceFields(this);
 
+
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
@@ -151,8 +175,10 @@ public class CustomerView extends Div implements BeforeEnterObserver {
                 if (this.customer == null) {
                     this.customer = new Customer();
                 }
-                binder.writeBean(this.customer);
+                binder.forField(email).withValidator(new EmailValidator("Keine valide Email-Adresse")).bind(Customer::getEmail, Customer::setEmail);
+                binder.forField(phone).withValidator(phone -> phone.matches("\\+?[0-9 /]+"), "Keine valide Handynummer").bind(Customer::getPhone, Customer::setPhone);
 
+                binder.writeBean(this.customer);
                 customerService.update(this.customer);
                 clearForm();
                 refreshGrid();
@@ -186,6 +212,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         });
 
             addSubject.addClickListener(e-> {
+
             if(!grid.getSelectedItems().iterator().hasNext()) {
                 Notification.show("Bitte wählen Sie einen Schüler aus");
                 return;
@@ -346,7 +373,7 @@ public class CustomerView extends Div implements BeforeEnterObserver {
         prename = new TextField("Vorname");
         surname = new TextField("Nachname");
         phone = new TextField("Telefon");
-        email = new TextField("Email");
+        email = new EmailField("Email");
         street = new TextField("Straße");
         city = new TextField("Stadt");
         zipcode = new TextField("PLZ");
