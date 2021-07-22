@@ -1,6 +1,8 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,8 @@ public class User implements UserDetails {
 
     @OneToOne
     @JoinColumn(referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Person person;
 
     @Column(nullable = false)

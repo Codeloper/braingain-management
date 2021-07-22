@@ -24,6 +24,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
 		login.setAction("login");
 
+
 		add(new H1("braingain"), login);
 	}
 

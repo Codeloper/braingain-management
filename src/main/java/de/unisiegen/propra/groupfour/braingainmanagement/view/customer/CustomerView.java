@@ -29,7 +29,6 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.data.binder.Binder;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;

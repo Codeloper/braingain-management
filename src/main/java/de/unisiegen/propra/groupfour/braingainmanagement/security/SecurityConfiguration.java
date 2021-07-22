@@ -1,22 +1,29 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.security;
 
+import com.vaadin.flow.server.VaadinSession;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    public static final PasswordEncoder passwordEncoder = new Argon2PasswordEncoder(16, 32, 2, 256, 8);
 
     private static final String LOGIN_PROCESSING_URL = "/login";
     private static final String LOGIN_FAILURE_URL = "/login?error";
@@ -36,6 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage(LOGIN_URL).permitAll()
                 .loginProcessingUrl(LOGIN_PROCESSING_URL)
                 .failureUrl(LOGIN_FAILURE_URL)
+                .successHandler((httpServletRequest, httpServletResponse, authentication) -> httpServletResponse.sendRedirect(((User) authentication.getPrincipal()).getRole() == User.Role.ADMIN ? "customer" : "tutorlessons"))
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
 
@@ -54,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return passwordEncoder;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.unisiegen.propra.groupfour.braingainmanagement.data.service;
 
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Person;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.TutorRepository;
 import lombok.AccessLevel;
