@@ -51,6 +51,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
     private TextField zipcode;
     private TextField bic;
     private TextField iban;
+    private TextField annotation;
     private MultiselectComboBox<Subject> subjects;
     private MultiselectComboBox<Customer> customers;
     //private DatePicker dateOfBirth;
@@ -88,6 +89,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
         // Configure Grid
         grid.addColumn("prename").setHeader("Vorname").setAutoWidth(true);
         grid.addColumn("surname").setHeader("Nachname").setAutoWidth(true);
+        grid.addColumn("annotation").setHeader("Anmerkung").setAutoWidth(true);
         grid.addColumn("phone").setHeader("Telefon").setAutoWidth(true);
         grid.addColumn("email").setHeader("Email").setAutoWidth(true);
         grid.addColumn("street").setHeader("Straße").setAutoWidth(true);
@@ -199,6 +201,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
         FormLayout formLayout = new FormLayout();
         prename = new TextField("Vorname");
         surname = new TextField("Nachname");
+        annotation = new TextField("Anmerkung");
         phone = new TextField("Telefon");
         email = new TextField("Email");
         street = new TextField("Straße");
@@ -218,7 +221,7 @@ public class TutorView extends Div implements BeforeEnterObserver {
         //occupation = new TextField("Occupation");
         //important = new Checkbox("Important");
         //important.getStyle().set("padding-top", "var(--lumo-space-m)");
-        Component[] fields = new Component[]{prename, surname, phone, email, street, city, zipcode, bic, iban,subjects,customers};
+        Component[] fields = new Component[]{prename, surname, annotation, phone, email, street, city, zipcode, bic, iban,subjects,customers};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

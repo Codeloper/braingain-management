@@ -60,34 +60,10 @@ class BraingainManagementApplicationTests {
 			tutorRainer.addSubject(subjectGerman);
 			tutorRainer.addSubject(subjectEnglish);
 
-			subjectRepository.saveAll(Arrays.asList(subjectMath, subjectEnglish, subjectGerman));
-			customerRepository.saveAll(Arrays.asList(customerEmilia, customerPeter));
-			tutorRepository.saveAll(Arrays.asList(tutorRainer, tutorTom));
+			//subjectRepository.saveAll(Arrays.asList(subjectMath, subjectEnglish, subjectGerman));
+			//customerRepository.saveAll(Arrays.asList(customerEmilia, customerPeter));
+			//tutorRepository.saveAll(Arrays.asList(tutorRainer, tutorTom));
 		});
-	}
-
-	@Test
-	void tutorService() {
-		//tutorService.update(new Tutor("Tom", "Rasch", "1", "aa", "aa", "a", "a", "a", "a"));
-		//Assertions.assertEquals("a199518d-3267-4003-a7f5-4fa636280341, Tom Rasch\n", tutorService.fetchAll().stream().map(t -> String.format("%s, %s %s\n", t.getId(), t.getPrename(), t.getSurname())).collect(Collectors.joining()));
-		//Assertions.assertTrue(tutorService.getRepository().findById(UUID.fromString("a199518d-3267-4003-a7f5-4fa636280341")).isPresent());
-	}
-
-	@Test
-	void pdfCreate() {
-		final Invoice invoice = new Invoice();
-		final Customer customer = new Customer("Peter", "Lustig", "51561650", "asd@agm.de", "Musterstraße 2", "Olpe", "57462");
-		final Tutor tutor = new Tutor("Tom", "Rasch", "01712693653", "me@tom.cologne", "Westfälische Straße 62", "Olpe", "57462", "WELADED1OPE", "DE48462500490002574473");
-		final Subject subject = new Subject("Mathe", 15, 25);
-		invoice.setDate(LocalDate.now());
-		invoice.setId("2020060801");
-		invoice.setRecipient(customer);
-		invoice.setLessons(Arrays.asList(new Lesson(LocalDate.now(), 2.0, tutor, customer, subject), new Lesson(LocalDate.now(), 1.0, tutor, customer, subject)));
-		try {
-			invoicePdfService.createPdf(invoice);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

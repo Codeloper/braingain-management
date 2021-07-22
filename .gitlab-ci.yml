@@ -1,0 +1,26 @@
+stages:
+  - build
+  - deploy
+
+image: maven:latest
+
+variables:
+  MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+build:
+  stage: build
+  script:
+    - echo "Building docker container"
+    - mvn $MAVEN_CLI_OPTS spring-boot:build-image
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploy production"
+    - docker stop braingain-production || true && docker rm braingain-production || true
+    - docker run -d -e SPRING_PROFILES_ACTIVE=production -e TZ="Europe/Berlin" -p 80:8080 -v /etc/localtime:/etc/localtime:ro --name braingain-production braingain:0.0.1-SNAPSHOT
+  environment:
+    name: production
+    url: http://braingain.tomrasch.de
+  only:
+    - master
