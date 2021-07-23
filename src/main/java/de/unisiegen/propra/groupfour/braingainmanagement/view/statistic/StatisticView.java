@@ -100,8 +100,8 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
             double sum = 0;
             lessons = lessonService.fetchAllByTutor(t);
             for (Lesson l : lessons){
-                expense += l.getSubject().getTutorFee();
-                profit += l.getSubject().getCustomerPrice();
+                expense += l.getSubject().getTutorFee()*l.getCount();
+                profit += l.getSubject().getCustomerPrice()*l.getCount();
                 count += l.getCount();
 
             }
@@ -120,8 +120,8 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
             double sum = 0;
             lessons = lessonService.fetchAllBySubject(s);
             for (Lesson l : lessons){
-                expense += l.getSubject().getTutorFee();
-                profit += l.getSubject().getCustomerPrice();
+                expense += l.getSubject().getTutorFee()*l.getCount();
+                profit += l.getSubject().getCustomerPrice()*l.getCount();
                 count += l.getCount();
 
             }
