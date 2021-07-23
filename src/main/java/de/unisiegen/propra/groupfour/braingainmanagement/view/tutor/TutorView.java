@@ -27,6 +27,7 @@ import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectSer
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.Optional;
@@ -144,6 +145,8 @@ public class TutorView extends Div implements BeforeEnterObserver {
                 UI.getCurrent().navigate(TutorView.class);
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the Tutoren details.");
+            }catch(DataIntegrityViolationException a){
+                Notification.show("Zu diesem Tutor bestehen Beziehungen in anderen Tabellen. Löschen nicht möglich!",3000,Notification.Position.BOTTOM_START);
             }
         });
         delete.addClickListener(e -> {

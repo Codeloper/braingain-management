@@ -49,6 +49,7 @@ import com.vaadin.flow.router.PageTitle;
 
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
@@ -203,6 +204,8 @@ public class CustomerView extends Div implements BeforeEnterObserver {
 
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to delete the customer details.");
+            }catch(DataIntegrityViolationException a){
+                Notification.show("Zu diesem Schüler bestehen Beziehungen in anderen Tabellen. Löschen nicht möglich!",3000,Notification.Position.BOTTOM_START);
             }
 
 

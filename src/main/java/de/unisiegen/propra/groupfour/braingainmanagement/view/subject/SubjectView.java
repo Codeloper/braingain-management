@@ -30,6 +30,7 @@ import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.CustomerV
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.vaadin.artur.helpers.CrudServiceDataProvider;
 
 import java.util.Optional;
@@ -151,6 +152,8 @@ public class SubjectView extends Div implements BeforeEnterObserver {
 
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to delete the customer details.");
+            }catch(DataIntegrityViolationException a){
+                Notification.show("Zu diesem Fach bestehen Beziehungen in anderen Tabellen. Löschen nicht möglich!",3000,Notification.Position.BOTTOM_START);
             }
 
 
