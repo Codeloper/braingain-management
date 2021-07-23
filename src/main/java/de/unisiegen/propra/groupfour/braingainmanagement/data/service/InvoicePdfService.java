@@ -14,17 +14,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 @Component
 public class InvoicePdfService {
-
-    private final static String INVOICE_FILE_PATH = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "invoice-%s.pdf";
 
     @Autowired
     private SpringTemplateEngine springTemplateEngine;
 
     public void createPdf(Invoice invoice) throws IOException {
-        try (final OutputStream os = new FileOutputStream(String.format(INVOICE_FILE_PATH, invoice.getId()))) {
+        try (final FileOutputStream os = new FileOutputStream("invoice.pdf")) {
             final Context context = new Context();
 
             context.setVariable("invoice", invoice);
