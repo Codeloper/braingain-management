@@ -75,5 +75,7 @@ public class LessonService extends CrudService<Lesson, UUID> {
 
     }
 
-
+    public List<Lesson> fetchAllBySubject(Subject subject){
+        return (List<Lesson>) repository.findAllBySubjectEquals(subject);
+    }
 }

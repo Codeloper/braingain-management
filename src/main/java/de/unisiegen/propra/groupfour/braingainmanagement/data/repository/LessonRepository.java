@@ -23,4 +23,6 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
     Collection<Lesson> findAllByTutorEqualsAndDateBetween(Tutor tutor, LocalDate start, LocalDate end);
 
     Collection<Lesson> findAllByTutorEquals(Tutor tutor);
+
+    Collection<Lesson> findAllBySubjectEquals(Subject subject);
 }

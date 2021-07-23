@@ -31,6 +31,7 @@ import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorServi
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -172,10 +173,15 @@ public class LessonView extends Div implements BeforeEnterObserver {
                     this.lesson = new Lesson();
                 }
                 binder.writeBean(this.lesson);
-                lessonService.delete(this.lesson.getId());
+                try{
+                    lessonService.delete(this.lesson.getId());
+                    Notification.show("Lesson details deleted.");
+                }catch(DataIntegrityViolationException a){
+                    Notification.show("Zu dieser Stunde bestehen Beziehungen in anderen Tabellen. Löschen nicht möglich!",3000,Notification.Position.BOTTOM_START);
+                }
                 clearForm();
                 refreshGrid();
-                Notification.show("Lesson details deleted.");
+
                 //this.customer=null;
                 UI.getCurrent().navigate(LessonView.class);
 

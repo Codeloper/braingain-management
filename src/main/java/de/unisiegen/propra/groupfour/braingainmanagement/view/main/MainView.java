@@ -6,10 +6,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,13 +16,19 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.CustomerSubject;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.User;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.repository.UserRepository;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.UserService;
+import de.unisiegen.propra.groupfour.braingainmanagement.security.SecurityConfiguration;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.TutorLessonView.TutorLessonView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.customer.CustomerView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.invoice.InvoiceView;
@@ -34,6 +37,8 @@ import de.unisiegen.propra.groupfour.braingainmanagement.view.statistic.Statisti
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.tutor.TutorView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.user.UserView;
+import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServlet;
@@ -94,12 +99,12 @@ public class MainView extends AppLayout {
         tempDiv.addClickListener(e -> {
             com.vaadin.flow.component.dialog.Dialog dialog = new com.vaadin.flow.component.dialog.Dialog();
 
-            HorizontalLayout formLayout = new HorizontalLayout();
+            FormLayout formLayout = new FormLayout();
 
 
 
 
-            Anchor logout = new Anchor("logout", "Log out");
+
             /*
             Button dialogLogout = new Button("Ausloggen");
             dialogLogout.addClickListener(ev -> {
@@ -110,8 +115,29 @@ public class MainView extends AppLayout {
 
             });
 */          //TODO Change Password input fields missing
-            formLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-            formLayout.add(logout);
+            //formLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            String Username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPerson().getFullName();
+            H2 label = new H2(Username);
+            PasswordField pw1 = new PasswordField("Neues Passwort");
+            PasswordField pw2 = new PasswordField("Passwort wiederholen");
+            Button pwButton = new Button("Passwort ändern");
+            pwButton.addClickListener(a -> {
+                User us= ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+                if(pw1.getValue().equals(pw2.getValue())&&!pw1.getValue().equals("")) {
+                    us.setPasswordHash(SecurityConfiguration.passwordEncoder.encode(pw1.getValue()));
+                    userService.update(us);
+                    dialog.close();
+                }else{
+                    Notification.show("Passwörter stimmen nicht überein!",3000,Notification.Position.BOTTOM_START);
+                }
+            });
+            formLayout.add(label);
+            formLayout.add(pw1);
+            formLayout.add(pw2);
+            formLayout.add(pwButton);
+            //formLayout.add(logout);
             dialog.add(formLayout);
             dialog.setWidth("500px");
             dialog.setHeight("300px");
@@ -123,9 +149,9 @@ public class MainView extends AppLayout {
 
         header.add(tempDiv);
 
-
+        Anchor logout = new Anchor("logout", "Log out");
         //Anchor logout = new Anchor("logout", "Log out");
-        //header.add(logout);
+        header.add(logout);
 
 
 

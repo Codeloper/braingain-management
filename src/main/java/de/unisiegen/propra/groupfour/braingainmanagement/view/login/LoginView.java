@@ -2,6 +2,7 @@ package de.unisiegen.propra.groupfour.braingainmanagement.view.login;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -23,7 +24,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 		setJustifyContentMode(JustifyContentMode.CENTER);
 
 		login.setAction("login");
+		login.addForgotPasswordListener(e->{
+			Notification.show("Wenden Sie sich an Ihren Administrator!");
 
+		});
 
 		add(new H1("braingain"), login);
 	}

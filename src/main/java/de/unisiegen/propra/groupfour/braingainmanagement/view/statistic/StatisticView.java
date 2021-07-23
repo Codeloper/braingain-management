@@ -25,6 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.*;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.LessonService;
+import de.unisiegen.propra.groupfour.braingainmanagement.data.service.SubjectService;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.TutorService;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import de.unisiegen.propra.groupfour.braingainmanagement.view.subject.SubjectView;
@@ -69,13 +70,15 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
 
    private final LessonService lessonService;
     private final TutorService tutorService;
+    private final SubjectService subjectService;
 
-    public StatisticView(@Autowired LessonService lessonService, @Autowired TutorService tutorService) {
+    public StatisticView(@Autowired LessonService lessonService, @Autowired TutorService tutorService, @Autowired SubjectService subjectService) {
 
 
         addClassNames("statistic-view", "flex", "flex-col", "h-full");
         this.lessonService = lessonService;
         this.tutorService = tutorService;
+        this.subjectService = subjectService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -92,17 +95,40 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
         for(Tutor t : tutors){
             double expense = 0;
             double profit = 0;
+            double count = 0;
             double sum = 0;
             lessons = lessonService.fetchAllByTutor(t);
             for (Lesson l : lessons){
                 expense += l.getSubject().getTutorFee();
                 profit += l.getSubject().getCustomerPrice();
-
+                count += l.getCount();
 
             }
             sum = profit-expense;
-            statistics.add(new Statistic(t,expense,profit,sum));
+            statistics.add(new Statistic(t,expense,profit,sum,count));
         }
+
+        List<SubjectStatistics> subjectStatistics = new ArrayList<SubjectStatistics>();
+        lessons = new ArrayList<Lesson>();
+        List<Subject> subjects = subjectService.fetchAll();
+
+        for(Subject s : subjects){
+            double expense = 0;
+            double profit = 0;
+            double count = 0;
+            double sum = 0;
+            lessons = lessonService.fetchAllBySubject(s);
+            for (Lesson l : lessons){
+                expense += l.getSubject().getTutorFee();
+                profit += l.getSubject().getCustomerPrice();
+                count += l.getCount();
+
+            }
+            sum = profit-expense;
+            subjectStatistics.add(new SubjectStatistics(s,expense,profit,sum,count));
+        }
+
+
 
         // Configure Grid
         grid.setItems(statistics);

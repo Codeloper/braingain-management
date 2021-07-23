@@ -46,7 +46,7 @@ import java.util.UUID;
 public class TutorLessonView extends Div implements BeforeEnterObserver {
     //TODO Grid Datenquelle ändern für spezifischen Tutor
     private final static String LESSON_ID = "LessonID";
-    private final static String LESSON_EDIT_ROUTE_TEMPLATE = "lessons/%s/edit";
+    private final static String LESSON_EDIT_ROUTE_TEMPLATE = "tutorlessons/%s/edit";
     private Grid<Lesson> grid = new Grid<>(Lesson.class, false);
 
     private DatePicker date;
@@ -85,7 +85,7 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
 
     public TutorLessonView(@Autowired LessonService lessonService, @Autowired TutorService tutorService) {
         tutorOBJECT = (Tutor) ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPerson();
-        System.out.println(tutorOBJECT.getFullName());
+        //System.out.println(tutorOBJECT.getFullName());
         addClassNames("lesson-view", "flex", "flex-col", "h-full");
         this.lessonService = lessonService;
         // Create UI
@@ -115,7 +115,7 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
         //grid.addColumn("occupation").setAutoWidth(true);
 
         // TODO: improve, idk what I have done | Filter überprüfen
-        System.out.println(lessonService.fetchAllByTutor(this.tutorOBJECT).size());
+        //System.out.println(lessonService.fetchAllByTutor(this.tutorOBJECT).size());
         grid.setDataProvider(DataProvider.fromCallbacks(query -> {
             query.getOffset();
             query.getLimit();
@@ -131,7 +131,7 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
                 UI.getCurrent().navigate(String.format(LESSON_EDIT_ROUTE_TEMPLATE, event.getValue().getId()));
             } else {
                 clearForm();
-                UI.getCurrent().navigate(LessonView.class);
+                UI.getCurrent().navigate(TutorLessonView.class);
             }
         });
 
@@ -160,7 +160,7 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
                 clearForm();
                 refreshGrid();
                 Notification.show("Lesson details stored.");
-                UI.getCurrent().navigate(LessonView.class);
+                UI.getCurrent().navigate(TutorLessonView.class);
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the Lesson details.");
             }
@@ -201,9 +201,11 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
                 // when a row is selected but the data is no longer available,
                 // refresh grid
                 refreshGrid();
-                event.forwardTo(SubjectView.class);
+                event.forwardTo(TutorLessonView.class);
             }
         }
+
+
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -270,7 +272,7 @@ public class TutorLessonView extends Div implements BeforeEnterObserver {
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        buttonLayout.add(save, cancel,delete);
+        buttonLayout.add(save, cancel);
         editorLayoutDiv.add(buttonLayout);
     }
 
