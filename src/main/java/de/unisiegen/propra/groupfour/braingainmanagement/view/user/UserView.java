@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -115,7 +116,7 @@ public class UserView extends Div implements BeforeEnterObserver {
         });
 
         save.addClickListener(e -> {
-            binder.forField(email).bind(User::getEmail, User::setEmail);
+            binder.forField(email).withValidator(new EmailValidator("Keine valide Email-Adresse")).bind(User::getEmail, User::setEmail);
             binder.forField(tutor).bind(User::getPerson, User::setPerson);
             binder.forField(password).bind(User::getPasswordHash, (user, password) -> user.setPasswordHash(SecurityConfiguration.passwordEncoder.encode(password)));
             try {

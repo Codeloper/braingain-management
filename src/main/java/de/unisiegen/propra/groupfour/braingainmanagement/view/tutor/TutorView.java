@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.*;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Subject;
@@ -136,8 +137,12 @@ public class TutorView extends Div implements BeforeEnterObserver {
                 if (this.tutor == null) {
                     this.tutor = new Tutor();
                 }
+                binder.forField(email).withValidator(new EmailValidator("Keine valide Email-Adresse")).bind(Tutor::getEmail, Tutor::setEmail);
+                binder.forField(phone).withValidator(phone -> phone.matches("\\+?[0-9 /]+"), "Keine valide Handynummer").bind(Tutor::getPhone, Tutor::setPhone);
+
                 binder.writeBean(this.tutor);
-                this.tutor.setAnnotation("");
+
+                //this.tutor.setAnnotation("");
                 tutorService.update(this.tutor);
                 clearForm();
                 refreshGrid();
