@@ -20,7 +20,7 @@ public class Tutor extends Person {
     @Column(nullable = false)
     private String bic, iban;
 
-    @OneToMany
+    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Subject> subjects;
 

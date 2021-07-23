@@ -54,6 +54,9 @@ public class MainView extends AppLayout {
     private Image logo;
     private final Tabs menu;
 
+    @Autowired
+    private UserService userService;
+
     public MainView() {
         logo = new Image("images/logo.png", "My App");
         logo.setId("logo");

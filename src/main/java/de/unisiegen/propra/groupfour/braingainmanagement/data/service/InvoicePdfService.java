@@ -3,7 +3,6 @@ package de.unisiegen.propra.groupfour.braingainmanagement.data.service;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Customer;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Invoice;
-import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Tutor;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
 import org.springframework.beans.factory.annotation.Autowired;
