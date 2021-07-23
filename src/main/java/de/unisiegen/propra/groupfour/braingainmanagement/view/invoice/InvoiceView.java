@@ -9,6 +9,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,6 +21,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Person;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.entity.Invoice;
 import de.unisiegen.propra.groupfour.braingainmanagement.data.service.*;
@@ -27,6 +29,9 @@ import de.unisiegen.propra.groupfour.braingainmanagement.util.exception.LessonAl
 import de.unisiegen.propra.groupfour.braingainmanagement.view.main.MainView;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +50,16 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
 
     private Button cancel = new Button("Abbrechen");
     private Button generate = new Button("Abrechnung generieren");
-    private Button generatePDf = new Button("PDF erstellen");
+
+    private Anchor generatePdfAnchor = new Anchor(new StreamResource("Rechnung.pdf", () -> {
+        try {
+            return new FileInputStream("invoice.pdf");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }), "");
+    private Button generatePdfButton = new Button("PDF erstellen");
     //private Button delete = new Button("Löschen");
 
     private Binder<Invoice> binder;
@@ -64,7 +78,6 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
         this.invoiceService = invoiceService;
         this.invoicePdfService = invoicePdfService;
         this.lessonService = lessonService;
-
 
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
@@ -125,19 +138,21 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
             }
         });
 
-        generatePDf.addClickListener(e -> {
-            if(grid.getSelectedItems().iterator().hasNext()==false) {
+        generatePdfAnchor.getElement().setAttribute("download", true);
+        generatePdfAnchor.add(generatePdfButton);
+
+        generatePdfButton.addClickListener(e -> {
+            if(!grid.getSelectedItems().iterator().hasNext()) {
                 Notification.show("Bitte wählen Sie eine Rechnung aus");
                 return;
             }
-                if (invoice != null){
-                    try {
-                        invoicePdfService.createPdf(invoice);
-                        Notification.show("Pdf created, check your Desktop.");
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
+            if (invoice != null){
+                try {
+                   invoicePdfService.createPdf(invoice);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
                 }
+            }
         });
 
        /* delete.addClickListener(e -> {
@@ -218,7 +233,7 @@ public class InvoiceView extends Div implements BeforeEnterObserver {
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         generate.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         //delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        buttonLayout.add(generate, cancel, generatePDf);
+        buttonLayout.add(generate, cancel, generatePdfAnchor);
         editorLayoutDiv.add(buttonLayout);
     }
 
