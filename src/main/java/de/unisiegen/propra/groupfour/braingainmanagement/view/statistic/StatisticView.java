@@ -45,6 +45,7 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
     private final static String STATISTIC_ID = "StatisticID";
     private final static String STATISTIC_EDIT_ROUTE_TEMPLATE = "statistic/%s/edit";
     private Grid<Statistic> grid = new Grid<>(Statistic.class, false);
+    private Grid<SubjectStatistics> grid2 = new Grid<>(SubjectStatistics.class, false);
 
     private DatePicker dateStart;
     private DatePicker dateUntil;
@@ -136,9 +137,20 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
         //grid.setColumns("tutor", "Ausgaben", "Einnahmen", "Summe");
 
         grid.addColumn("tutor").setHeader("Tutor").setAutoWidth(true);
+        grid.addColumn("count").setHeader("Anzahl Stunden").setAutoWidth(true);
         grid.addColumn("expenses").setHeader("Ausgaben").setAutoWidth(true);
         grid.addColumn("profits").setHeader("Einnahmen").setAutoWidth(true);
         grid.addColumn("sum").setHeader("Summe").setAutoWidth(true);
+
+        grid2.setItems(subjectStatistics);
+
+        //grid.setColumns("tutor", "Ausgaben", "Einnahmen", "Summe");
+
+        grid2.addColumn("subject").setHeader("Fach").setAutoWidth(true);
+        grid2.addColumn("count").setHeader("Anzahl Stunden").setAutoWidth(true);
+        grid2.addColumn("expenses").setHeader("Ausgaben").setAutoWidth(true);
+        grid2.addColumn("profits").setHeader("Einnahmen").setAutoWidth(true);
+        grid2.addColumn("sum").setHeader("Summe").setAutoWidth(true);
 /*
         grid.setDataProvider(DataProvider.fromCallbacks(query -> {
             query.getOffset();
@@ -148,7 +160,10 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
         */
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.setHeightFull();
+        //grid.setHeightFull();
+
+        grid2.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+       // grid2.setHeightFull();
 
         // when a row is selected or deselected, populate form
         /*
@@ -258,6 +273,7 @@ public class StatisticView  extends Div implements BeforeEnterObserver {
         wrapper.add(grid);
         H1 Label1 = new H1("Fächerstatistik");
         wrapper.add(Label1);
+        wrapper.add(grid2);
     }
 
     private void refreshGrid() {

@@ -52,8 +52,8 @@ public class InvoiceService extends CrudService<Invoice, String> {
         if(invoicedLessons == null)
             throw new IllegalStateException("recipient has to be Customer or Tutor");
 
-        if(invoicedLessons.size() > 0)
-            throw new LessonAlreadyInvoicedException(lessons);
+        //if(invoicedLessons.size() > 0)
+          //  throw new LessonAlreadyInvoicedException(lessons);
 
         invoice.setLessons(lessons);
 
